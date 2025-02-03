@@ -1,0 +1,23 @@
+/* Estilos globales */
+body {
+  margin: 0;
+  padding: 0;
+  padding-top: 3%;
+  display: flex;
+  justify-content: flex-start; /* Alinea todo hacia la izquierda para evitar el centrado */
+  align-items: flex-start; /* Alinea todo hacia la parte superior */
+  height: 100vh;
+  width: 100%;
+  background: linear-gradient(to right, #95cbd4, #e4e8c0);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+}
+
+#root {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column; /* Asegura que los elementos estén apilados verticalmente */
+  justify-content: flex-start; /* Alinea los elementos hacia la parte superior */
+  align-items: stretch; /* Asegura que los elementos ocupen todo el ancho */
+}

@@ -1,0 +1,699 @@
+/* Estilos globales para Home */
+body {
+  overflow-x: hidden; /* Oculta el scroll horizontal */
+  margin: 0;
+}
+.home-container {
+  font-family: Arial, sans-serif;
+  min-height: 100vh; /* Asegura que ocupe toda la altura de la ventana */
+  display: flex;
+  flex-direction: column; /* Apila el contenido verticalmente */
+  overflow-x: hidden; /* Evita el desbordamiento horizontal */
+}
+
+.logo {
+  height: 40px; /* Ajusta el tamaño del logo según lo necesites */
+}
+.threeLogics {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 2rem;
+  left: 10px;
+}
+
+.home-header {
+  background-color: #282c34;
+  color: white;
+  padding: 0.5rem;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: fixed; /* Hace que el header sea fijo */
+  top: 0; /* Lo coloca en la parte superior */
+  z-index: 1000; /* Asegura que esté por encima del resto del contenido */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Añade sombra para destacarlo */
+}
+
+.home-header h1 {
+  position: relative;
+  margin: 0;
+  right: 20.5%;
+  font-size: 25px;
+  color: #eeeeee;
+}
+.home-header a {
+  color: #eeeeee;
+  text-decoration: none;
+}
+
+.home-nav a {
+  margin: 0 1rem;
+  color: white;
+  text-decoration: none;
+  border: 1px solid white;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+}
+.home-nav a:hover {
+  background-color: #444;
+}
+
+/* Estilo especial para el enlace de Login */
+.home-nav a.login-link {
+  background-color: #24b47e; /* Color verde */
+  border-color: #24b47e; /* Borde verde */
+}
+
+.home-nav a.login-link:hover {
+  background-color: #1a9d62; /* Color verde más oscuro al hacer hover */
+  color: white; /* Mantén el color del texto blanco al hacer hover */
+}
+
+.home-main {
+  flex: 1; /* Esto hace que el main ocupe el espacio restante */
+  text-align: center;
+  color: white;
+  background: linear-gradient(to right, #95cbd4, #e4e8c0);
+  padding: 2rem;
+  margin: 0 auto;
+  max-width: 1200px; /* Limita el ancho máximo */
+  filter: brightness(0.9); /* Más oscuro */
+}
+
+.home-footer {
+  background-color: #282c34;
+  color: white;
+  text-align: center;
+  padding: 1rem;
+  width: 100%;
+  position: relative; /* Asegura que el footer esté al final, sin importar el tamaño del contenido */
+}
+
+/* Asegura que el header y footer ocupen todo el ancho */
+.home-header,
+.home-footer {
+  width: 100%; /* Establece el ancho a 100% */
+}
+
+/* En el main también, asegúrate de que ocupe todo el ancho disponible */
+.home-main {
+  width: 100%;
+  padding: 2rem;
+  text-align: center;
+  color: white;
+}
+
+.background-container {
+  position: relative; /* Establece un contexto de posicionamiento */
+  width: 95%; /* Mantiene el ancho de la imagen */
+  height: 600px; /* Mantiene el alto de la imagen */
+  margin: 10px auto; /* Centra horizontalmente el contenedor */
+  border-radius: 50px; /* Mantiene el borde redondeado */
+  overflow: hidden; /* Asegura que el contenido no salga del contenedor */
+  margin-top: 5%;
+}
+
+.background-image {
+  width: 100%; /* La imagen llena el contenedor */
+  height: 100%; /* La imagen llena el contenedor */
+  object-fit: cover; /* Ajusta la imagen sin deformarla */
+}
+
+.overlay-logo {
+  position: absolute; /* Posiciona el contenedor sobre la imagen */
+  top: 50%; /* Centro vertical */
+  left: 50%; /* Centro horizontal */
+  transform: translate(-50%, -50%); /* Ajusta para centrar completamente */
+  display: flex; /* Flexbox para alinear elementos en fila */
+  flex-direction: row; /* Asegura que los elementos estén uno al lado del otro */
+  align-items: center; /* Centra verticalmente los elementos */
+  text-align: left; /* Asegura que el texto esté alineado a la izquierda */
+  gap: 1rem; /* Espaciado entre el logo y el texto */
+}
+
+.overlay-image {
+  width: 10%; /* Ajusta el tamaño del logo */
+  height: auto; /* Mantiene las proporciones del logo */
+  margin-left: 28%;
+  margin-top: 5%;
+}
+
+.home-title {
+  font-size: 1.65rem; /* Tamaño del texto */
+  color: #fff; /* Color del texto */
+  font-weight: bold; /* Negrita */
+  margin-top: 10%;
+}
+
+.about-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-top: 2rem;
+  padding: 2rem;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.about-left {
+  flex: 1;
+  margin-right: 2rem;
+}
+
+.about-left h2 {
+  font-size: 4rem;
+  margin: 0;
+  color: #000;
+  text-align: left;
+}
+
+.about-left h3 {
+  font-size: 3.8rem;
+  margin: 0.5rem 0;
+  color: #555;
+  text-align: left;
+  margin-bottom: 10%;
+}
+
+.about-table {
+  width: 100%;
+  margin-top: 1rem;
+  border-collapse: collapse;
+}
+
+.about-table td {
+  padding: 0.5rem;
+  border-bottom: 1px solid #ddd;
+}
+
+.about-table td:first-child {
+  color: #555;
+
+  text-align: left;
+}
+
+.about-table td:last-child {
+  color: #555;
+  font-weight: bold;
+  text-align: left;
+}
+
+.about-right {
+  flex: 2;
+  color: #444;
+  font-size: 1.5rem;
+  line-height: 1.5rem;
+  margin-left: 15%;
+  text-align: justify;
+  line-height: 130%;
+}
+.infographic-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  color: #333;
+  font-family: Arial, sans-serif;
+  text-align: justify;
+}
+
+.description-and-tags {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+  max-width: 1200px;
+  gap: 2rem;
+}
+
+.infographic-description {
+  flex: 2; /* Ocupa más espacio para el texto */
+  font-size: 1.2rem;
+  line-height: 1.6;
+}
+
+.tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  flex: 1; /* Ocupa menos espacio para las etiquetas */
+  justify-content: flex-start;
+  gap: 1rem;
+  margin-top: 4%;
+}
+
+.tag {
+  background-color: #f0f0f0;
+  color: #555;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  white-space: nowrap; /* Evita que el texto se desborde */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 21%;
+  text-align: center;
+}
+
+.stats-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0; /* Elimina separación entre los elementos */
+}
+
+.stat {
+  position: relative;
+  margin-top: 2%;
+  border: 2px solid #e0e0e0;
+  border-radius: 50px;
+  padding: 30px 40px;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-left: -20px; /* Superpone los elementos */
+  width: 200px;
+}
+
+.stat h2 {
+  font-size: 2.5rem;
+  color: #000;
+  margin: 0;
+}
+
+.stat p {
+  margin: 0.5rem 0 0;
+  color: #555;
+  font-size: 1rem;
+}
+.challenges-container {
+  padding: 2rem;
+  font-family: Arial, sans-serif;
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.challenges-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 2rem;
+}
+
+.challenges-cards {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.challenge-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  width: 100%;
+  max-width: 500px;
+  text-align: left;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: #f0f0f0;
+  font-size: 1.5rem;
+}
+
+.problem-icon {
+  background-color: #ffd6d6;
+  color: #ff4d4d;
+}
+
+.solution-icon {
+  background-color: #d6f7d6;
+  color: #24b47e;
+}
+
+.card-type {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #555;
+}
+
+.card-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: #000;
+}
+
+.card-description {
+  font-size: 1rem;
+  color: #666;
+  margin-bottom: 1rem;
+}
+
+.card-list h4 {
+  font-size: 1rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: #000;
+}
+
+.card-list ul {
+  list-style: none;
+  padding: 0;
+  color: #000;
+}
+
+.card-list li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  color: #000;
+}
+
+.card-list li::before {
+  content: "✔️";
+  margin-right: 0.5rem;
+  color: #24b47e;
+}
+.instagram-posts-container {
+  display: flex;
+  gap: 3rem; /* Espacio entre las imágenes */
+  background-color: #f4f4b8; /* Fondo amarillo */
+  padding: 4rem;
+  justify-content: center; /* Centra las imágenes horizontalmente */
+  align-items: center; /* Centra verticalmente las imágenes */
+  flex-wrap: nowrap; /* Mantén las imágenes en una línea */
+  max-height: 1200px;
+  width: 100%; /* Asegura que el contenedor ocupe todo el ancho */
+  box-sizing: border-box; /* Incluye padding en el ancho total */
+  overflow: hidden; /* Oculta contenido si excede el contenedor */
+  margin-top: 2rem;
+  border-radius: 40px; /* Bordes redondeados */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4); /* Sombra suave */
+}
+
+.instagram-post {
+  max-width: 300px; /* Limita el ancho máximo de las imágenes */
+  height: auto; /* Mantiene las proporciones de las imágenes */
+  object-fit: contain; /* Ajusta la imagen para que no se recorte */
+  border: 2px solid #ddd; /* Opcional: añade un borde para un diseño limpio */
+  border-radius: 40px; /* Opcional: bordes redondeados */
+}
+.instagram-post:nth-child(2) {
+  transform: translateY(-30px); /* Mueve la imagen central hacia arriba */
+}
+.full-width-image-container {
+  width: 100%; /* Asegura que el contenedor ocupe todo el ancho */
+  margin: 2rem 0; /* Margen superior e inferior */
+}
+
+.full-width-image {
+  width: 100%; /* Imagen ocupa todo el ancho */
+  height: 100vh; /* Mantiene las proporciones de la imagen */
+  display: block; /* Elimina el espacio en línea alrededor de la imagen */
+}
+/* Container General */
+.persona-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: Arial, sans-serif;
+  color: #333;
+}
+
+/* Header */
+.persona-header {
+  display: flex;
+  align-items: center; /* Alinear elementos verticalmente */
+  justify-content: space-between; /* Espacio entre los elementos */
+  margin-bottom: 2rem;
+}
+
+.persona-header h1 {
+  font-size: 3.5rem;
+  margin: 0; /* Eliminar márgenes para mejor alineación */
+  text-align: left;
+}
+
+.persona-header p {
+  font-size: 1rem;
+  color: #666;
+  line-height: 1.5;
+  margin: 0; /* Eliminar márgenes */
+  text-align: justify;
+  max-width: 60%; /* Ajustar ancho para evitar que ocupe demasiado espacio */
+}
+
+/* Perfil */
+.persona-profile {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+  background: #f8f8f8;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Imagen */
+.persona-image img {
+  border-radius: 12px;
+  width: 400px;
+  height: auto;
+  object-fit: cover;
+}
+
+/* Detalles */
+.persona-details {
+  flex: 1;
+}
+
+.persona-tags {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.tag {
+  background-color: #eef;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  color: #333;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.persona-details h2 {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  text-align: left;
+}
+
+.persona-details p {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #666;
+  margin-bottom: 1.5rem;
+  text-align: justify;
+}
+
+.persona-details h3 {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.persona-details ul {
+  list-style: none;
+  padding: 0;
+}
+
+.persona-details li {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+}
+
+.persona-details li::before {
+  content: "✔️";
+  color: #24b47e;
+  margin-right: 0.5rem;
+}
+
+.flujo-container {
+  width: 100%; /* Asegura que el contenedor ocupe todo el ancho */
+  margin: 2rem 0; /* Margen superior e inferior */
+}
+
+.flujo-image {
+  width: 100%; /* Imagen ocupa todo el ancho */
+  height: auto; /* Mantiene las proporciones de la imagen */
+  display: block; /* Elimina el espacio en línea alrededor de la imagen */
+} /* Container General */
+.persona-container-2 {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: Arial, sans-serif;
+  color: #333;
+}
+
+/* Header */
+.persona-header-2 {
+  display: flex;
+  align-items: center; /* Alinear elementos verticalmente */
+  justify-content: space-between; /* Espacio entre los elementos */
+  margin-bottom: 2rem;
+  flex-direction: row-reverse; /* Invertir el orden de los elementos */
+}
+
+.persona-header-2 h1 {
+  font-size: 3.5rem;
+  margin: 0; /* Eliminar márgenes para mejor alineación */
+  text-align: right; /* Cambiar alineación a la derecha */
+}
+
+.persona-header-2 p {
+  font-size: 1rem;
+  color: #666;
+  line-height: 1.5;
+  margin: 0; /* Eliminar márgenes */
+  text-align: justify;
+  max-width: 60%; /* Ajustar ancho para evitar que ocupe demasiado espacio */
+}
+
+/* Perfil */
+.persona-profile-2 {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+  background: #f8f8f8;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  flex-direction: row-reverse; /* Invertir el orden de los elementos */
+}
+
+/* Imagen */
+.persona-image-2 img {
+  border-radius: 12px;
+  width: 400px;
+  height: auto;
+  object-fit: cover;
+}
+
+/* Detalles */
+.persona-details-2 {
+  flex: 1;
+}
+
+.persona-tags-2 {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  justify-content: flex-end; /* Alinear las etiquetas a la derecha */
+}
+
+.tag-2 {
+  background-color: #eef;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  color: #333;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.persona-details-2 h2 {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  text-align: left;
+}
+
+.persona-details-2 p {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #666;
+  margin-bottom: 1.5rem;
+  text-align: justify;
+}
+
+.persona-details-2 h3 {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.persona-details-2 ul {
+  list-style: none;
+  padding: 0;
+}
+
+.persona-details-2 li {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+}
+
+.persona-details-2 li::before {
+  content: "✔️";
+  color: #24b47e;
+  margin-left: 0.5rem; /* Cambiar margen para alineación derecha */
+  margin-right: 0; /* Eliminar margen derecho */
+}
+/* Capa difusa para el fondo */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7); /* Fondo oscuro con opacidad */
+  z-index: 999; /* Se asegura de que la capa esté por encima de todo */
+}
+
+.auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.auth-card {
+  margin-top: 5%;
+  display: flex;
+  flex-direction: row;
+  background-color: #2b2b37;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+  width: 100%;
+  max-width: 800px;
+  color: #ffffff;
+  text-align: center;
+  gap: 20px;
+  z-index: 1000; /* Asegúrate de que el formulario esté encima de la capa difusa */
+}
