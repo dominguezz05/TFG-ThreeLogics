@@ -5,6 +5,8 @@ import { dirname } from "path";
 // Importar base de datos
 import sequelize from "./config/database.js";
 
+//Comentario para Prueba GITHUB
+
 // Importar modelos desde indexModels.js (Evita problemas de importaciones circulares)
 // Importar base de datos y modelos
 import {
