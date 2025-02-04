@@ -2,7 +2,7 @@ import { useState, useContext, useEffect } from "react";
 import { api } from "../services/api";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify"; // ✅ Importar toastify 
+import { toast } from "react-toastify"; 
 
 function CrearProducto() {
   const { usuario } = useContext(AuthContext);
@@ -15,45 +15,71 @@ function CrearProducto() {
     cantidad: "",
     categoriaId: "",
   });
-  const [categorias, setCategorias] = useState([]); // Estado para guardar categorías
+  
+  const [categorias, setCategorias] = useState([]); 
+  const [nuevaCategoria, setNuevaCategoria] = useState(""); // Estado para nueva categoría
+  const [creandoCategoria, setCreandoCategoria] = useState(false); // Estado para mostrar input
 
-  // Obtener categorías al cargar la página
+  // Obtener categorías
   useEffect(() => {
-    api
-      .get("/categorias")
-      .then((response) => {
-        console.log("Categorías recibidas:", response.data); // 👀 Verifica en consola
-        setCategorias(response.data);
-      })
+    api.get("/categorias")
+      .then((response) => setCategorias(response.data))
       .catch((error) => console.error("Error al obtener categorías:", error));
   }, []);
-  
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setProducto({
-      ...producto,
-      [name]: name === "categoriaId" ? Number(value) : value, // 🔹 Asegurar que `categoriaId` es un número
-    });
+    setProducto({ ...producto, [name]: name === "categoriaId" ? Number(value) : value });
+
+    if (name === "categoriaId" && value === "crear") {
+      setCreandoCategoria(true);
+      setProducto({ ...producto, categoriaId: "" });
+    } else {
+      setCreandoCategoria(false);
+    }
   };
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const productoConUsuario = { ...producto, usuarioId: usuario?.id || null };
-      const response = await api.post("/productos", productoConUsuario);
 
-      toast.success(`✅ Producto "${response.data.nombre}" añadido con éxito!`); // ✅ Notificación en vez de alert()
+    try {
+      let categoriaIdFinal = producto.categoriaId;
+
+      // 🚀 Crear nueva categoría si el usuario eligió "crear nueva"
+      if (creandoCategoria && nuevaCategoria.trim() !== "") {
+        // Verificar si ya existe la categoría
+        const existeCategoria = categorias.find(c => c.nombre.toLowerCase() === nuevaCategoria.toLowerCase());
+
+        if (existeCategoria) {
+          categoriaIdFinal = existeCategoria.id;
+          toast.info(`ℹ️ La categoría "${nuevaCategoria}" ya existe y será usada.`);
+        } else {
+          const responseCategoria = await api.post("/categorias", { nombre: nuevaCategoria });
+          categoriaIdFinal = responseCategoria.data.id;
+          toast.success(`✅ Categoría "${nuevaCategoria}" creada con éxito!`);
+
+          // Actualizar categorías en el frontend
+          setCategorias([...categorias, responseCategoria.data]);
+        }
+      }
+
+      // Crear producto con la categoría final
+      const response = await api.post("/productos", {
+        ...producto,
+        categoriaId: categoriaIdFinal,
+        usuarioId: usuario?.id || null,
+      });
+
+      toast.success(`✅ Producto "${response.data.nombre}" añadido con éxito!`);
       navigate("/productos");
+
     } catch (error) {
       toast.error(error.response?.data?.error || "❌ Error al añadir producto");
     }
   };
-  
 
   return (
     <div className="p-5 max-w-4xl mx-auto flex gap-5">
-      {/* Formulario */}
       <div className="w-1/2">
         <h1 className="text-2xl font-bold mb-4">Añadir Producto</h1>
         <form onSubmit={handleSubmit} className="grid gap-3">
@@ -93,31 +119,36 @@ function CrearProducto() {
             required
           />
 
-          {/* Select para elegir categoría */}
+          {/* Selección de Categoría */}
           <select
-  name="categoriaId"
-  value={producto.categoriaId}
-  onChange={handleChange}
-  className="border p-2"
-  required
->
-  <option value="">Selecciona una categoría</option>
-  {categorias && categorias.length > 0 ? (
-    categorias.map((categoria) => (
-      <option key={categoria.id} value={categoria.id}>
-        {categoria.nombre}
-      </option>
-    ))
-  ) : (
-    <option disabled>No hay categorías disponibles</option>
-  )}
-</select>
-
-
-          <button
-            type="submit"
-            className="bg-blue-500 text-white px-4 py-2 rounded"
+            name="categoriaId"
+            value={producto.categoriaId}
+            onChange={handleChange}
+            className="border p-2"
+            required={!creandoCategoria}
           >
+            <option value="">Selecciona una categoría</option>
+            {categorias.map((categoria) => (
+              <option key={categoria.id} value={categoria.id}>
+                {categoria.nombre}
+              </option>
+            ))}
+            <option value="crear">+ Crear nueva categoría</option>
+          </select>
+
+          {/* Input para nueva categoría */}
+          {creandoCategoria && (
+            <input
+              type="text"
+              placeholder="Nombre de la nueva categoría"
+              value={nuevaCategoria}
+              onChange={(e) => setNuevaCategoria(e.target.value)}
+              className="border p-2"
+              required
+            />
+          )}
+
+          <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">
             Añadir Producto
           </button>
         </form>
@@ -125,15 +156,7 @@ function CrearProducto() {
 
       {/* Tabla de Categorías */}
       <div className="w-1/2">
-        <div className="flex justify-between items-center mb-4">
-          <h1 className="text-2xl font-bold">Categorías Disponibles</h1>
-          <button
-            onClick={() => navigate("/crear-categoria")}
-            className="bg-purple-500 text-white px-4 py-2 rounded"
-          >
-            + Añadir Categoría
-          </button>
-        </div>
+        <h1 className="text-2xl font-bold mb-4">Categorías Disponibles</h1>
         <table className="w-full border-collapse border border-gray-300">
           <thead>
             <tr className="bg-gray-100">
@@ -151,10 +174,7 @@ function CrearProducto() {
               ))
             ) : (
               <tr>
-                <td
-                  colSpan="2"
-                  className="border px-4 py-2 text-center text-gray-500"
-                >
+                <td colSpan="2" className="border px-4 py-2 text-center text-gray-500">
                   No hay categorías disponibles
                 </td>
               </tr>
