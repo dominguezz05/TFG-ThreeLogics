@@ -10,12 +10,12 @@ import Movimientos from "./pages/Movimientos";
 import CrearProducto from "./pages/CrearProducto";
 import CrearCategoria from "./pages/CrearCategoria";
 import Dashboard from "./pages/Dashboard";
-import Home from "./pages/Home"; // ✅ Importa tu archivo Home.jsx
+import Home from "./pages/Home";
 import PasarelaPago from "./pages/PasarelaPago";
 import Pedidos from "./pages/Pedidos";
 import CrearPedido from "./pages/CrearPedido";
 import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css"; 
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   const { usuario } = useContext(AuthContext);
@@ -56,12 +56,20 @@ function App() {
           path="/crear-categoria"
           element={usuario ? <CrearCategoria /> : <Navigate to="/login" />}
         />
-        <Route path="/dashboard" element={usuario ? <Dashboard /> : <Navigate to="/" />} />
+        <Route
+          path="/dashboard"
+          element={usuario ? <Dashboard /> : <Navigate to="/" />}
+        />
 
-        <Route path="/pedidos" element={usuario ? <Pedidos /> : <Navigate to="/" />} />
-        <Route path="/crear-pedido" element={usuario ? <CrearPedido /> : <Navigate to="/" />} />
+        <Route
+          path="/pedidos"
+          element={usuario ? <Pedidos /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/crear-pedido"
+          element={usuario ? <CrearPedido /> : <Navigate to="/" />}
+        />
         <Route path="/pago/:id" element={<PasarelaPago />} />
-
 
         <Route path="*" element={<h1>404 - Página no encontrada</h1>} />
       </Routes>
