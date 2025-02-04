@@ -16,11 +16,6 @@ function Header() {
         {/* Navegación */}
         <nav>
           <ul className="flex space-x-4">
-            <li>
-              <Link to="/" className="hover:underline">
-                Inicio
-              </Link>
-            </li>
             {usuario && (
               <>
                 <li>
