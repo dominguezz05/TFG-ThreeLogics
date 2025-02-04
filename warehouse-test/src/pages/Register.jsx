@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { api } from "../services/api";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify"; // ✅ Importar toast para notificaciones
+
 
 function Register() {
   const [nombre, setNombre] = useState("");
@@ -9,17 +11,62 @@ function Register() {
   const [rol, setRol] = useState("cliente"); // Cliente por defecto
   const navigate = useNavigate();
 
+   // Sanitización básica (elimina etiquetas HTML)
+   const sanitizeInput = (input) => {
+    const parser = new DOMParser();
+    const sanitizedString = parser.parseFromString(input, "text/html").body.textContent || "";
+    return sanitizedString.trim();
+  };
+  
+  // Validación de nombre (sin caracteres especiales y al menos 3 caracteres)
+  const validateNombre = (nombre) => {
+    const nombrePattern = /^[a-zA-ZÀ-ÿ\s]{3,40}$/;
+    return nombrePattern.test(nombre);
+  };
+
+  // Validación de email
+  const validateEmail = (email) => {
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailPattern.test(email);
+  };
+
+  // Validación de contraseña (mínimo 8 caracteres, una mayúscula, un número y un carácter especial)
+  const validatePassword = (password) => {
+    const passwordPattern = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    return passwordPattern.test(password);
+  };
+
 const handleRegister = async (e) => {
   e.preventDefault();
+  const sanitizedNombre = sanitizeInput(nombre);
+  const sanitizedEmail = sanitizeInput(email);
+  const sanitizedPassword = sanitizeInput(password);
 
-  console.log("Datos enviados al backend:", { nombre, email, password, rol }); // 🔍 Depuración
+  // Validaciones
+  if (!validateNombre(sanitizedNombre)) {
+    toast.error("El nombre debe tener al menos 3 caracteres y solo letras.");
+    return;
+  }
+
+  if (!validateEmail(sanitizedEmail)) {
+    toast.error("Correo electrónico inválido. Asegúrate de que tenga un formato correcto (ej: usuario@dominio.com).");
+    return;
+  }
+
+  if (!validatePassword(sanitizedPassword)) {
+    toast.error("La contraseña debe tener al menos 8 caracteres, una mayúscula, un número y un carácter especial.");
+    return;
+  }
+
+
+  console.log("Datos enviados al backend:", { nombre: sanitizedNombre, email: sanitizedEmail, password: sanitizedPassword, rol }); // 🔍 Depuración
 
   try {
-    await api.post("/auth/register", { nombre, email, password, rol });
-    alert("Registro exitoso. Ahora puedes iniciar sesión.");
+    await api.post("/auth/register", { nombre: sanitizedNombre, email: sanitizedEmail, password: sanitizedPassword, rol });
+    toast.success("✅ Registro exitoso. Ahora puedes iniciar sesión.");
     navigate("/login");
   } catch (error) {
-    alert(error.response?.data?.error || "Error en el registro");
+    toast.error(error.response?.data?.error || "Error en el registro");
   }
 };
 
@@ -37,7 +84,7 @@ const handleRegister = async (e) => {
           required
         />
         <input
-          type="email"
+          type="text"
           placeholder="Correo"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
