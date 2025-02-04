@@ -89,7 +89,7 @@ router.get("/estadisticas", verificarToken, async (req, res) => {
   }
 });
 
-// 📌 Generar reporte en PDF de movimientos
+/// 📌 Generar reporte en PDF de movimientos (Mejorado)
 router.get("/reporte-pdf", verificarToken, async (req, res) => {
   try {
     const { usuario } = req;
@@ -112,33 +112,76 @@ router.get("/reporte-pdf", verificarToken, async (req, res) => {
         .json({ error: "No hay movimientos para generar el PDF" });
     }
 
-    // Crear el PDF
-    const doc = new PDFDocument();
+    // 📌 Crear el documento PDF
+    const doc = new PDFDocument({ margin: 40 });
     res.setHeader(
       "Content-Disposition",
-      "attachment; filename=reporte_movimientos.pdf"
+      'attachment; filename="reporte_movimientos.pdf"'
     );
     res.setHeader("Content-Type", "application/pdf");
-
     doc.pipe(res);
 
-    // 📝 Título del PDF
-    const nombreUsuario = usuario?.nombre || "Usuario Desconocido";
-    doc.text(`📊 Reporte de Movimientos - ${nombreUsuario}`, {
-      align: "center",
-    });
+    // 📌 Fuente predeterminada
+    doc.font("Helvetica");
 
+    // 📌 Encabezado con Título
+    doc
+      .fontSize(20)
+      .text("Reporte de Movimientos", { align: "center", underline: true })
+      .moveDown();
+
+    // 🏷️ Datos del Usuario
+    doc
+      .fontSize(12)
+      .text(`Usuario: ${usuario.nombre || "Desconocido"}`, { align: "left" })
+      .text(`Fecha: ${new Date().toLocaleDateString()}`, { align: "left" })
+      .moveDown();
+
+    // 📌 Línea divisoria
+    doc.moveTo(40, doc.y).lineTo(550, doc.y).stroke();
+    doc.moveDown(1);
+
+    // 📦 Encabezado de Tabla
+    doc
+      .fontSize(14)
+      .text("Detalles de Movimientos:", { underline: true })
+      .moveDown();
+
+    // 📌 Dibujar la tabla manualmente
+    doc.fontSize(10);
+    const tableTop = doc.y;
+    const columnSpacing = 100;
+    const rowHeight = 20;
+    const startX = 40;
+
+    // 📌 Dibujar encabezados
+    doc.text("ID", startX, tableTop);
+    doc.text("Producto", startX + columnSpacing, tableTop);
+    doc.text("Tipo", startX + columnSpacing * 2, tableTop);
+    doc.text("Cantidad", startX + columnSpacing * 3, tableTop);
+    doc.text("Fecha", startX + columnSpacing * 4, tableTop);
     doc.moveDown();
 
-    // 🗂 Tabla de movimientos
+    // 📌 Dibujar cada fila de la tabla
+    let currentY = tableTop + rowHeight;
     movimientos.forEach((mov) => {
-      doc.fontSize(12).text(`Producto: ${mov.Producto?.nombre || "N/A"}`);
-      doc.text(`Tipo: ${mov.tipo}`);
-      doc.text(`Cantidad: ${mov.cantidad}`);
-      doc.text(`Fecha: ${new Date(mov.fecha).toLocaleString()}`);
-      doc.moveDown();
+      doc.text(mov.id.toString(), startX, currentY);
+      doc.text(mov.Producto?.nombre || "N/A", startX + columnSpacing, currentY);
+      doc.text(
+        mov.tipo === "entrada" ? " Entrada" : " Salida",
+        startX + columnSpacing * 2,
+        currentY
+      );
+      doc.text(mov.cantidad.toString(), startX + columnSpacing * 3, currentY);
+      doc.text(
+        new Date(mov.fecha).toLocaleString(),
+        startX + columnSpacing * 4,
+        currentY
+      );
+      currentY += rowHeight;
     });
 
+    // 🔚 Cerrar documento
     doc.end();
   } catch (error) {
     console.error("Error generando PDF:", error);

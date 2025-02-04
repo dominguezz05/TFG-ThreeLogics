@@ -1,18 +1,25 @@
 import { useEffect, useState, useContext } from "react";
 import { api } from "../services/api";
 import { AuthContext } from "../context/AuthContext";
-import html2canvas from "html2canvas";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from "recharts";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  Legend,
+} from "recharts";
 
 function Dashboard() {
   const { usuario } = useContext(AuthContext);
   const [estadisticas, setEstadisticas] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  
 
   useEffect(() => {
-    api.get("/dashboard/estadisticas")
+    api
+      .get("/dashboard/estadisticas")
       .then((response) => {
         console.log("📊 Datos recibidos:", response.data);
         setEstadisticas(response.data);
@@ -27,7 +34,8 @@ function Dashboard() {
 
   if (loading) return <p>Cargando datos...</p>;
   if (error) return <p className="text-red-500">{error}</p>;
-  if (!estadisticas) return <p className="text-red-500">❌ No hay datos disponibles.</p>;
+  if (!estadisticas)
+    return <p className="text-red-500">❌ No hay datos disponibles.</p>;
 
   // Validación de valores numéricos
   const movimientosEntrada = Number(estadisticas?.movimientosEntrada) || 0;
@@ -40,10 +48,11 @@ function Dashboard() {
   ];
 
   // 📊 Datos para productos más movidos
-  const productosMasMovidos = estadisticas?.productosMasMovidos?.map((prod) => ({
-    nombre: prod.Producto?.nombre || "Desconocido",
-    total: prod.total,
-  })) || [];
+  const productosMasMovidos =
+    estadisticas?.productosMasMovidos?.map((prod) => ({
+      nombre: prod.Producto?.nombre || "Desconocido",
+      total: prod.total,
+    })) || [];
 
   const descargarPDF = async () => {
     try {
@@ -52,12 +61,12 @@ function Dashboard() {
         console.error("⚠️ No hay token disponible");
         return;
       }
-  
+
       const response = await api.get("/dashboard/reporte-pdf", {
         headers: { Authorization: `Bearer ${token}` }, // ✅ Enviar el token en la cabecera
         responseType: "blob", // 🔥 Para manejar archivos correctamente
       });
-  
+
       // Crear un enlace de descarga
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement("a");
@@ -66,7 +75,7 @@ function Dashboard() {
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-  
+
       console.log("✅ PDF descargado correctamente");
     } catch (error) {
       console.error("❌ Error al descargar el PDF:", error);
@@ -95,12 +104,11 @@ function Dashboard() {
 
       {/* 📥 Botón para generar reporte PDF */}
       <button
-  onClick={descargarPDF}
-  className="mt-5 bg-blue-500 text-white px-4 py-2 rounded"
->
-  📥 Descargar Reporte PDF
-</button>
-
+        onClick={descargarPDF}
+        className="mt-5 bg-blue-500 text-white px-4 py-2 rounded"
+      >
+        📥 Descargar Reporte PDF
+      </button>
 
       {/* 📊 Comparación de Entradas vs Salidas */}
       <h2 className="text-xl font-bold mt-5">🔄 Entradas vs Salidas</h2>
@@ -128,7 +136,9 @@ function Dashboard() {
       {/* 🔥 Categoría Más Popular */}
       <div className="mt-5 p-4 border rounded bg-yellow-100">
         <h2 className="text-xl font-semibold">🔥 Categoría Más Popular</h2>
-        <p className="text-2xl font-bold">{estadisticas?.categoriaMasPopular || "N/A"}</p>
+        <p className="text-2xl font-bold">
+          {estadisticas?.categoriaMasPopular || "N/A"}
+        </p>
       </div>
     </div>
   );
