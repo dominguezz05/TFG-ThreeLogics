@@ -45,7 +45,7 @@ function App() {
         <Route
           path="/categorias"
           element={
-            usuario?.rol === "admin" ? <Categorias /> : <Navigate to="/" />
+            usuario?.rol === "admin" ? <Categorias /> : <Navigate to="/login" />
           }
         />
         <Route
