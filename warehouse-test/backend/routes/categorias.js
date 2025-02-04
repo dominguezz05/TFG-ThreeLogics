@@ -1,7 +1,7 @@
 import express from "express";
 import { body, validationResult } from "express-validator";
 import Categoria from "../models/Categoria.js";
-
+import { verificarToken } from "../middleware/authMiddleware.js"; // Middleware de autenticación
 const router = express.Router();
 
 // Middleware para validar errores de express-validator
@@ -31,13 +31,18 @@ router.post(
 
 // ✅ Permitir que cualquier usuario vea las categorías
 // ✅ Endpoint para obtener todas las categorías
-router.get("/", async (req, res) => {
+router.get("/", verificarToken, async (req, res) => {
   try {
-    const categorias = await Categoria.findAll();
-    console.log("Categorías enviadas al frontend:", categorias); // 🔍 Debug
+    let categorias;
 
-    if (!categorias || categorias.length === 0) {
-      return res.status(404).json({ error: "No hay categorías disponibles" });
+    if (req.usuario.rol === "admin") {
+      // Admin ve todas las categorías
+      categorias = await Categoria.findAll();
+    } else {
+      // Cliente solo ve sus propias categorías
+      categorias = await Categoria.findAll({
+        where: { usuarioId: req.usuario.id },
+      });
     }
 
     res.json(categorias);

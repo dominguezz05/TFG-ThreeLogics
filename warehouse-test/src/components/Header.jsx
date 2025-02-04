@@ -33,13 +33,12 @@ function Header() {
                     Movimientos
                   </Link>
                 </li>
-                {usuario.rol === "admin" && (
                   <li>
                     <Link to="/categorias" className="hover:underline">
                       Categorías
                     </Link>
                   </li>
-                )}
+                
                 <li>
                   <Link to="/dashboard" className="hover:underline">
                     Dashboard
