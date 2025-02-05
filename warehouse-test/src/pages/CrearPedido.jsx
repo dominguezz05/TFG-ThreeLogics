@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom"; // ✅ Importar useNavigate
-import { toast } from "react-toastify"; // ✅ Importar toast para notificaciones
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import { api } from "../services/api";
-import "react-toastify/dist/ReactToastify.css"; // Importar estilos de notificación
+import "react-toastify/dist/ReactToastify.css";
 
 function CrearPedido() {
   const [productos, setProductos] = useState([]);
   const [pedido, setPedido] = useState([]);
-  const navigate = useNavigate(); // ✅ Definir navigate para redirección
+  const [cantidades, setCantidades] = useState({}); // Estado para almacenar cantidades ingresadas
+  const navigate = useNavigate();
 
   useEffect(() => {
     cargarProductos();
@@ -23,17 +24,35 @@ function CrearPedido() {
     }
   };
 
+  // 📌 Manejar cambios en el input de cantidad
+  const handleCantidadChange = (productoId, cantidad) => {
+    if (cantidad < 1) cantidad = 1; // No permitir valores negativos o 0
+    setCantidades({ ...cantidades, [productoId]: cantidad });
+  };
+
+  // 📌 Agregar producto al pedido con cantidad personalizada
   const agregarProducto = (producto) => {
+    const cantidadSeleccionada = cantidades[producto.id] || 1; // Tomar cantidad ingresada o 1 por defecto
+
     const existe = pedido.find((p) => p.productoId === producto.id);
     if (existe) {
       setPedido(
         pedido.map((p) =>
-          p.productoId === producto.id ? { ...p, cantidad: p.cantidad + 1 } : p
+          p.productoId === producto.id
+            ? { ...p, cantidad: cantidadSeleccionada }
+            : p
         )
       );
     } else {
-      setPedido([...pedido, { productoId: producto.id, cantidad: 1 }]);
+      setPedido([
+        ...pedido,
+        { productoId: producto.id, cantidad: cantidadSeleccionada },
+      ]);
     }
+
+    toast.success(
+      `🛒 ${producto.nombre} añadido con ${cantidadSeleccionada} unidades`
+    );
   };
 
   const quitarProducto = (productoId) => {
@@ -47,16 +66,13 @@ function CrearPedido() {
     }
 
     try {
-      // 📌 Crear pedido en estado "pendiente"
       const response = await api.post("/pedidos", { productos: pedido });
 
       toast.success("✅ Pedido realizado con éxito.");
-
       setPedido([]); // Limpiar el carrito
 
-      // ⏳ Esperar 2 segundos antes de redirigir para mostrar la notificación
       setTimeout(() => {
-        navigate("/pedidos"); // ✅ Redirigir a Pedidos.jsx
+        navigate("/pedidos");
       }, 2000);
     } catch (error) {
       console.error("❌ Error al realizar pedido:", error);
@@ -71,9 +87,21 @@ function CrearPedido() {
       <h2 className="text-xl font-semibold">🛒 Seleccionar Productos</h2>
       <div className="grid grid-cols-2 gap-5">
         {productos.map((producto) => (
-          <div key={producto.id} className="p-4 border rounded bg-gray-100">
+          <div
+            key={producto.id}
+            className="p-4 border rounded bg-gray-100 flex flex-col items-center"
+          >
             <h3 className="font-semibold">{producto.nombre}</h3>
             <p>Precio: ${producto.precio.toFixed(2)}</p>
+            <input
+              type="number"
+              min="1"
+              value={cantidades[producto.id] || 1}
+              onChange={(e) =>
+                handleCantidadChange(producto.id, parseInt(e.target.value))
+              }
+              className="border p-2 w-16 text-center mt-2"
+            />
             <button
               onClick={() => agregarProducto(producto)}
               className="mt-2 bg-green-500 text-white px-3 py-1 rounded"
