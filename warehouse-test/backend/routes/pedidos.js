@@ -181,13 +181,13 @@ router.delete("/:id", verificarToken, async (req, res) => {
   }
 });
 
-// 📌 Actualizar pedidos a "completado" automáticamente después de 1 día
+// 📌 Actualizar pedidos a "completado" automáticamente después de 2 minutes
 setInterval(async () => {
   try {
     const pedidos = await Pedido.findAll({
       where: {
         estado: "enviado",
-        fecha: { [Op.lt]: new Date(Date.now() - 120) }, // Hace 1 día
+        fecha: { [Op.lt]: new Date(Date.now() - 120) },
       },
       include: [
         {

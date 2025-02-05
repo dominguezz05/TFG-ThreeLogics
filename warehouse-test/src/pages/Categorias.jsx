@@ -2,6 +2,7 @@ import { useEffect, useState, useContext } from "react";
 import { api } from "../services/api";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify"; // 📌 Importamos toast para notificaciones
 
 function Categorias() {
   const { usuario } = useContext(AuthContext);
@@ -15,9 +16,12 @@ function Categorias() {
         const response = await api.get("/categorias", {
           headers: { Authorization: `Bearer ${token}` },
         });
+
         setCategorias(response.data);
+        toast.success("✅ Categorías cargadas correctamente");
       } catch (error) {
         console.error("Error al obtener categorías:", error);
+        toast.error("❌ No se pudieron cargar las categorías.");
       }
     };
 

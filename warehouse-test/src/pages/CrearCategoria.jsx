@@ -1,11 +1,12 @@
 import { useState, useContext } from "react";
 import { api } from "../services/api";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext"; // ✅ Importar AuthContext
+import { AuthContext } from "../context/AuthContext";
+import { toast } from "react-toastify"; // ✅ Importar toast para notificaciones
 
 function CrearCategoria() {
   const navigate = useNavigate();
-  const { usuario } = useContext(AuthContext); // ✅ Obtener usuario autenticado
+  const { usuario } = useContext(AuthContext);
   const [categoria, setCategoria] = useState({ nombre: "" });
 
   const handleChange = (e) => {
@@ -16,21 +17,27 @@ function CrearCategoria() {
     e.preventDefault();
 
     if (!categoria.nombre.trim()) {
-      alert("El nombre de la categoría no puede estar vacío.");
+      toast.error("❌ El nombre de la categoría no puede estar vacío.");
       return;
     }
 
     try {
       const response = await api.post("/categorias", {
         nombre: categoria.nombre,
-        usuarioId: usuario.id, // ✅ Enviar usuarioId
+        usuarioId: usuario.id,
       });
 
-      alert(`Categoría "${response.data.nombre}" añadida con éxito!`);
+      if (response.data?.nombre) {
+        toast.success(`✅ Categoría "${response.data.nombre}" añadida con éxito!`);
+      } else {
+        toast.error("❌ No se pudo obtener el nombre de la categoría.");
+      }
+
       navigate("/crear-producto"); // Redirige a la página de productos
     } catch (error) {
       console.error("Error al añadir categoría:", error);
-      alert(error.response?.data?.error || "Error al añadir categoría");
+      const mensajeError = error.response?.data?.error || "Error al añadir categoría";
+      toast.error(`❌ ${mensajeError}`);
     }
   };
 
