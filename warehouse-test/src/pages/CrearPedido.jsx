@@ -7,7 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 function CrearPedido() {
   const [productos, setProductos] = useState([]);
   const [pedido, setPedido] = useState([]);
-  const [cantidades, setCantidades] = useState({}); // Estado para almacenar cantidades ingresadas
+  const [cantidades, setCantidades] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -26,15 +26,15 @@ function CrearPedido() {
 
   // 📌 Manejar cambios en el input de cantidad
   const handleCantidadChange = (productoId, cantidad) => {
-    if (cantidad < 1) cantidad = 1; // No permitir valores negativos o 0
+    if (cantidad < 1) cantidad = 1;
     setCantidades({ ...cantidades, [productoId]: cantidad });
   };
 
-  // 📌 Agregar producto al pedido con cantidad personalizada
+  // 📌 Agregar producto con cantidad personalizada
   const agregarProducto = (producto) => {
-    const cantidadSeleccionada = cantidades[producto.id] || 1; // Tomar cantidad ingresada o 1 por defecto
-
+    const cantidadSeleccionada = cantidades[producto.id] || 1;
     const existe = pedido.find((p) => p.productoId === producto.id);
+
     if (existe) {
       setPedido(
         pedido.map((p) =>
@@ -59,6 +59,26 @@ function CrearPedido() {
     setPedido(pedido.filter((p) => p.productoId !== productoId));
   };
 
+  // 📌 Nueva función para limpiar el carrito
+  const limpiarCarrito = () => {
+    if (pedido.length === 0) {
+      toast.warning("⚠️ El carrito ya está vacío.");
+      return;
+    }
+
+    if (window.confirm("¿Estás seguro de que quieres vaciar el carrito?")) {
+      setPedido([]);
+      toast.success("🗑 Carrito vaciado correctamente.");
+    }
+  };
+
+  const calcularTotal = () => {
+    return pedido.reduce((total, p) => {
+      const producto = productos.find((prod) => prod.id === p.productoId);
+      return total + (producto ? producto.precio * p.cantidad : 0);
+    }, 0);
+  };
+
   const realizarPedido = async () => {
     if (pedido.length === 0) {
       toast.warning("⚠️ Debes seleccionar al menos un producto.");
@@ -69,7 +89,7 @@ function CrearPedido() {
       const response = await api.post("/pedidos", { productos: pedido });
 
       toast.success("✅ Pedido realizado con éxito.");
-      setPedido([]); // Limpiar el carrito
+      setPedido([]);
 
       setTimeout(() => {
         navigate("/pedidos");
@@ -93,6 +113,9 @@ function CrearPedido() {
           >
             <h3 className="font-semibold">{producto.nombre}</h3>
             <p>Precio: ${producto.precio.toFixed(2)}</p>
+            <p className="text-sm text-gray-500">
+              Stock disponible: {producto.cantidad}
+            </p>
             <input
               type="number"
               min="1"
@@ -133,6 +156,17 @@ function CrearPedido() {
               </li>
             ))}
           </ul>
+          <h3 className="mt-4 font-bold text-lg">
+            Total: ${calcularTotal().toFixed(2)}
+          </h3>
+
+          {/* 📌 Botón para limpiar carrito */}
+          <button
+            onClick={limpiarCarrito}
+            className="mt-3 bg-red-500 text-white px-4 py-2 rounded"
+          >
+            🗑 Vaciar Carrito
+          </button>
         </div>
       )}
 
