@@ -3,6 +3,7 @@ import { verificarToken } from "../middleware/authMiddleware.js";
 import Pedido from "../models/Pedido.js";
 import DetallePedido from "../models/DetallePedido.js";
 import Producto from "../models/Producto.js";
+import Movimiento from "../models/Movimiento.js";
 import sequelize from "../config/database.js";
 import { Op } from "sequelize";
 
@@ -22,7 +23,7 @@ router.post("/", verificarToken, async (req, res) => {
 
     const pedido = await sequelize.transaction(async (t) => {
       const nuevoPedido = await Pedido.create(
-        { usuarioId, total: 0, estado: "pendiente" }, // Se agrega estado inicial "pendiente"
+        { usuarioId, total: 0, estado: "pendiente" },
         { transaction: t }
       );
 
@@ -60,13 +61,12 @@ router.post("/", verificarToken, async (req, res) => {
 });
 
 // 📌 Obtener pedidos del usuario autenticado
-// 📌 Obtener pedidos (Admin ve todos, usuario solo los suyos)
 router.get("/", verificarToken, async (req, res) => {
   try {
-    let whereCondition = {}; // Para filtrar pedidos
+    let whereCondition = {};
 
     if (req.usuario.rol !== "admin") {
-      whereCondition.usuarioId = req.usuario.id; // Si no es admin, solo ve sus pedidos
+      whereCondition.usuarioId = req.usuario.id;
     }
 
     const pedidos = await Pedido.findAll({
@@ -87,44 +87,74 @@ router.get("/", verificarToken, async (req, res) => {
   }
 });
 
-// 📌 Cambiar estado de un pedido (Solo Admin)
 // 📌 Cambiar estado de un pedido
 router.put("/:id/estado", verificarToken, async (req, res) => {
   const { estado } = req.body;
   const { id } = req.params;
 
   try {
-    const pedido = await Pedido.findByPk(id);
+    const pedido = await Pedido.findByPk(id, {
+      include: [
+        {
+          model: DetallePedido,
+          include: {
+            model: Producto,
+            attributes: ["id", "nombre", "cantidad"],
+          },
+        },
+      ],
+    });
+
     if (!pedido) {
       return res.status(404).json({ error: "Pedido no encontrado" });
     }
 
-    // 🚀 Verifica que el estado es válido
     const estadosPermitidos = ["pendiente", "pagar", "enviado", "completado"];
     if (!estadosPermitidos.includes(estado)) {
       return res.status(400).json({ error: "Estado no permitido" });
     }
 
-    // 🔹 Si el estado es "pagar", simular la pasarela de pago
+    // 📌 Si el estado es "pagar", simular la pasarela de pago
     if (estado === "pagar") {
-      // Simulación de la pasarela de pago con un delay de 3 segundos
       setTimeout(async () => {
-        pedido.estado = "enviado"; // Cambia el estado a "enviado" automáticamente tras el pago
+        pedido.estado = "enviado";
         await pedido.save();
         console.log(
           `💳 Pago simulado, pedido ${pedido.id} marcado como enviado.`
         );
-      }, 3000); // Simulación de tiempo de espera para el pago
+      }, 3000);
       return res.json({
         mensaje: "⏳ Redirigiendo a pasarela de pago...",
         pedido,
       });
     }
 
-    // 📌 Actualizar estado en la base de datos
-    await Pedido.update({ estado }, { where: { id } });
+    // 📌 Si el estado cambia a "completado", actualizar stock y registrar movimientos
+    if (estado === "completado") {
+      for (const detalle of pedido.DetallePedidos) {
+        const producto = await Producto.findByPk(detalle.productoId);
 
-    res.json({ mensaje: "Estado del pedido actualizado", pedido });
+        if (!producto) continue;
+
+        // 🔄 Sumar cantidad al stock
+        producto.cantidad += detalle.cantidad;
+        await producto.save();
+
+        // 🔄 Registrar movimiento de entrada
+        await Movimiento.create({
+          productoId: producto.id,
+          tipo: "entrada",
+          cantidad: detalle.cantidad,
+          usuarioId: req.usuario.id,
+          fecha: new Date(),
+        });
+      }
+    }
+
+    // 📌 Actualizar el estado del pedido
+    await pedido.update({ estado });
+
+    res.json({ mensaje: `Pedido actualizado a ${estado}`, pedido });
   } catch (error) {
     console.error("Error al actualizar estado del pedido:", error);
     res.status(500).json({ error: "Error al actualizar estado del pedido" });
@@ -150,21 +180,54 @@ router.delete("/:id", verificarToken, async (req, res) => {
     res.status(500).json({ error: "Error al eliminar pedido" });
   }
 });
+
+// 📌 Actualizar pedidos a "completado" automáticamente después de 1 día
 setInterval(async () => {
   try {
     const pedidos = await Pedido.findAll({
       where: {
         estado: "enviado",
-        fecha: { [Op.lt]: new Date(Date.now() - 24 * 60 * 60 * 1000) }, // Hace 1 día
+        fecha: { [Op.lt]: new Date(Date.now() - 120) }, // Hace 1 día
       },
+      include: [
+        {
+          model: DetallePedido,
+          include: {
+            model: Producto,
+            attributes: ["id", "nombre", "cantidad"],
+          },
+        },
+      ],
     });
 
     for (const pedido of pedidos) {
       pedido.estado = "completado";
       await pedido.save();
+
+      // 📌 Al completar el pedido, actualizar el stock y registrar movimientos
+      for (const detalle of pedido.DetallePedidos) {
+        const producto = await Producto.findByPk(detalle.productoId);
+
+        if (!producto) continue;
+
+        // 🔄 Sumar cantidad al stock
+        producto.cantidad += detalle.cantidad;
+        await producto.save();
+
+        // 🔄 Registrar movimiento de entrada
+        await Movimiento.create({
+          productoId: producto.id,
+          tipo: "entrada",
+          cantidad: detalle.cantidad,
+          usuarioId: pedido.usuarioId,
+          fecha: new Date(),
+        });
+      }
     }
 
-    console.log("✅ Pedidos enviados ahora están completados.");
+    console.log(
+      "✅ Pedidos enviados ahora están completados y el stock ha sido actualizado."
+    );
   } catch (error) {
     console.error("❌ Error actualizando pedidos completados:", error);
   }

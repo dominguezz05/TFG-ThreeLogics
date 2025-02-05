@@ -49,3 +49,5 @@ export {
   Pedido,
   DetallePedido,
 };
+Usuario.hasMany(Categoria, { foreignKey: "usuarioId" });
+Categoria.belongsTo(Usuario, { foreignKey: "usuarioId" });

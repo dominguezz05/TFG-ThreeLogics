@@ -13,14 +13,21 @@ const validarCampos = (req, res, next) => {
   next();
 };
 
-// ✅ Crear categoría con validación
+// ✅ Crear categoría con validación y asignación de usuarioId
 router.post(
   "/",
-  [body("nombre").notEmpty().withMessage("El nombre es obligatorio").trim()],
+  [
+    verificarToken, // ✅ Asegurar que el usuario está autenticado
+    body("nombre").notEmpty().withMessage("El nombre es obligatorio").trim(),
+  ],
   validarCampos,
   async (req, res) => {
     try {
-      const categoria = await Categoria.create(req.body);
+      const { nombre } = req.body;
+      const usuarioId = req.usuario.id; // ✅ Obtener usuario autenticado
+
+      const categoria = await Categoria.create({ nombre, usuarioId });
+
       res.status(201).json(categoria);
     } catch (error) {
       console.error("Error al crear la categoría:", error);
@@ -29,7 +36,6 @@ router.post(
   }
 );
 
-// ✅ Permitir que cualquier usuario vea las categorías
 // ✅ Endpoint para obtener todas las categorías
 router.get("/", verificarToken, async (req, res) => {
   try {

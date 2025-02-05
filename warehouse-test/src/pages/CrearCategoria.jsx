@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { api } from "../services/api";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext"; // ✅ Importar AuthContext
 
 function CrearCategoria() {
   const navigate = useNavigate();
+  const { usuario } = useContext(AuthContext); // ✅ Obtener usuario autenticado
   const [categoria, setCategoria] = useState({ nombre: "" });
 
   const handleChange = (e) => {
@@ -12,12 +14,20 @@ function CrearCategoria() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!categoria.nombre.trim()) {
+      alert("El nombre de la categoría no puede estar vacío.");
+      return;
+    }
+
     try {
-      const response = await api.post("/categorias", categoria);
-      console.log("Categoría añadida:", response.data);
+      const response = await api.post("/categorias", {
+        nombre: categoria.nombre,
+        usuarioId: usuario.id, // ✅ Enviar usuarioId
+      });
 
       alert(`Categoría "${response.data.nombre}" añadida con éxito!`);
-      navigate("/crear-producto"); // Redirige a la página de creación de productos
+      navigate("/crear-producto"); // Redirige a la página de productos
     } catch (error) {
       console.error("Error al añadir categoría:", error);
       alert(error.response?.data?.error || "Error al añadir categoría");
