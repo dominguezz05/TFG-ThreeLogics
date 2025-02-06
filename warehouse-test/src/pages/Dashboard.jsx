@@ -83,7 +83,7 @@ function Dashboard() {
   };
 
   return (
-    <div className="p-5">
+    <div className="p-5 bg-black">
       <h1 className="text-2xl font-bold mb-4">📊 Dashboard de Estadísticas</h1>
 
       {/* 📌 Mostrar solo si hay estadísticas */}
@@ -111,7 +111,7 @@ function Dashboard() {
       </button>
 
       {/* 📊 Comparación de Entradas vs Salidas */}
-      <h2 className="text-xl font-bold mt-5">🔄 Entradas vs Salidas</h2>
+      <h2 className="text-white font-bold mt-5">🔄 Entradas vs Salidas</h2>
       <ResponsiveContainer width="100%" height={300}>
         <BarChart data={datosMovimientos}>
           <XAxis dataKey="tipo" />
@@ -123,7 +123,7 @@ function Dashboard() {
       </ResponsiveContainer>
 
       {/* 📊 Productos Más Movidos */}
-      <h2 className="text-xl font-bold mt-5">🔝 Productos Más Movidos</h2>
+      <h2 className="text-white font-bold mt-5">🔝 Productos Más Movidos</h2>
       <ResponsiveContainer width="100%" height={300}>
         <BarChart data={productosMasMovidos}>
           <XAxis dataKey="nombre" />

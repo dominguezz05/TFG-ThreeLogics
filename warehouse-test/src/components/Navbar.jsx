@@ -20,14 +20,6 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [lastScrollY]);
 
-  const handleScrollToProcess = (e) => {
-    e.preventDefault();
-    const section = document.getElementById("work-process");
-    if (section) {
-      section.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-
   return (
     <nav
       className={`fixed top-0 left-0 w-full bg-black text-white px-8 py-4 flex justify-between items-center transition-transform duration-300 z-50 ${
@@ -39,29 +31,46 @@ export default function Navbar() {
         <Link to="/">📦 ThreeLogics</Link>
       </div>
 
-      {/* Nueva sección de información */}
-      <div className="hidden md:flex items-center space-x-6 text-gray-300">
-        <Link to="/about" className="hover:text-white transition">
-          Nosotros
-        </Link>
-        <Link to="/services" className="hover:text-white transition">
-          Servicios
-        </Link>
-        <a
-          href="#work-process"
-          onClick={handleScrollToProcess}
-          className="hover:text-teal-400 transition"
-        >
-          Proceso
-        </a>
-        <span className="text-gray-500">|</span>
-        <a
-          href="mailto:info@threelogics.com"
-          className="text-teal-400 hover:text-teal-300 transition"
-        >
-          info@threelogics.com
-        </a>
-      </div>
+      {/* Opciones cuando NO hay usuario autenticado */}
+      {!usuario ? (
+        <div className="hidden md:flex items-center space-x-6 text-gray-300">
+          <Link to="/about" className="hover:text-teal-400 transition">
+            Nosotros
+          </Link>
+          <Link to="/services" className="hover:text-teal-400 transition">
+            Servicios
+          </Link>
+          <Link to="/#work-process" className="hover:text-teal-400 transition">
+            Proceso
+          </Link>
+          <span className="text-gray-500">|</span>
+          <a
+            href="mailto:info@threelogics.com"
+            className="text-teal-400 hover:text-teal-300 transition"
+          >
+            info@threelogics.com
+          </a>
+        </div>
+      ) : (
+        // Opciones cuando el usuario está autenticado
+        <div className="hidden md:flex items-center space-x-6 text-gray-300">
+          <Link to="/productos" className="hover:text-teal-400 transition">
+            Productos
+          </Link>
+          <Link to="/movimientos" className="hover:text-teal-400 transition">
+            Movimientos
+          </Link>
+          <Link to="/categorias" className="hover:text-teal-400 transition">
+            Categorías
+          </Link>
+          <Link to="/pedidos" className="hover:text-teal-400 transition">
+            Pedidos
+          </Link>
+          <Link to="/dashboard" className="hover:text-teal-400 transition">
+            Dashboard
+          </Link>
+        </div>
+      )}
 
       {/* Botones de autenticación */}
       <div className="hidden md:flex space-x-4 items-center">

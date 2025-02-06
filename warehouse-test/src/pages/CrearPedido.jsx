@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { api } from "../services/api";
 import "react-toastify/dist/ReactToastify.css";
+import { motion } from "framer-motion";
 
 function CrearPedido() {
   const [productos, setProductos] = useState([]);
@@ -100,21 +101,39 @@ function CrearPedido() {
     }
   };
 
-  return (
-    <div className="p-5">
-      <h1 className="text-2xl font-bold mb-4">📝 Crear Pedido</h1>
 
-      <h2 className="text-xl font-semibold">🛒 Seleccionar Productos</h2>
-      <div className="grid grid-cols-2 gap-5">
+return (
+  <div className="w-full min-h-screen bg-black flex justify-center items-center pt-10">
+    <motion.div
+      initial={{ opacity: 0, y: 50 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 1, ease: "easeOut" }}
+      className="p-8 max-w-4xl w-full bg-gray-900 text-white rounded-lg shadow-2xl"
+    >
+      <motion.h1
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1, delay: 0.2 }}
+        className="text-3xl font-bold text-teal-400 mb-6 text-center"
+      >
+        📝 Crear Pedido
+      </motion.h1>
+
+      {/* Seleccionar Productos */}
+      <h2 className="text-xl font-semibold mb-4">🛒 Seleccionar Productos</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
         {productos.map((producto) => (
-          <div
+          <motion.div
             key={producto.id}
-            className="p-4 border rounded bg-gray-100 flex flex-col items-center"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+            className="p-4 border border-gray-700 bg-gray-800 rounded-lg shadow-lg flex flex-col items-center"
           >
-            <h3 className="font-semibold">{producto.nombre}</h3>
-            <p>Precio: ${producto.precio.toFixed(2)}</p>
+            <h3 className="font-semibold text-lg">{producto.nombre}</h3>
+            <p className="text-gray-400">💰 ${producto.precio.toFixed(2)}</p>
             <p className="text-sm text-gray-500">
-              Stock disponible: {producto.cantidad}
+              📦 Stock disponible: {producto.cantidad}
             </p>
             <input
               type="number"
@@ -123,61 +142,77 @@ function CrearPedido() {
               onChange={(e) =>
                 handleCantidadChange(producto.id, parseInt(e.target.value))
               }
-              className="border p-2 w-16 text-center mt-2"
+              className="border border-gray-700 bg-gray-900 text-white p-2 w-16 text-center mt-2 rounded-lg focus:ring-2 focus:ring-teal-400"
             />
-            <button
+            <motion.button
+              whileHover={{ scale: 1.05 }}
               onClick={() => agregarProducto(producto)}
-              className="mt-2 bg-green-500 text-white px-3 py-1 rounded"
+              className="mt-2 bg-green-500 text-black font-semibold px-4 py-2 rounded-lg transition-all cursor-pointer
+                         hover:shadow-[0px_0px_20px_rgba(45,212,191,0.8)] hover:bg-green-600"
             >
               ➕ Agregar
-            </button>
-          </div>
+            </motion.button>
+          </motion.div>
         ))}
       </div>
 
-      <h2 className="text-xl font-semibold mt-5">🛍️ Tu Pedido</h2>
+      {/* Tu Pedido */}
+      <h2 className="text-xl font-semibold mt-6">🛍️ Tu Pedido</h2>
       {pedido.length === 0 ? (
-        <p>No has agregado productos.</p>
+        <p className="text-gray-400">No has agregado productos.</p>
       ) : (
-        <div className="mt-3 p-4 border rounded bg-gray-200">
-          <ul>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
+          className="mt-4 p-4 border border-gray-700 bg-gray-800 rounded-lg shadow-md"
+        >
+          <ul className="space-y-2">
             {pedido.map((p) => (
-              <li key={p.productoId} className="flex justify-between">
-                <span>
+              <li key={p.productoId} className="flex justify-between items-center">
+                <span className="text-gray-300">
                   {productos.find((prod) => prod.id === p.productoId)?.nombre} -{" "}
                   {p.cantidad} unidades
                 </span>
-                <button
+                <motion.button
+                  whileHover={{ scale: 1.1 }}
                   onClick={() => quitarProducto(p.productoId)}
-                  className="text-red-500"
+                  className="text-red-500 hover:text-red-400 transition"
                 >
                   ❌
-                </button>
+                </motion.button>
               </li>
             ))}
           </ul>
-          <h3 className="mt-4 font-bold text-lg">
+          <h3 className="mt-4 font-bold text-lg text-teal-400">
             Total: ${calcularTotal().toFixed(2)}
           </h3>
 
-          {/* 📌 Botón para limpiar carrito */}
-          <button
+          {/* Botón para limpiar carrito */}
+          <motion.button
+            whileHover={{ scale: 1.05 }}
             onClick={limpiarCarrito}
-            className="mt-3 bg-red-500 text-white px-4 py-2 rounded"
+            className="mt-3 bg-red-500 text-black font-semibold px-4 py-2 rounded-lg transition-all cursor-pointer
+                       hover:shadow-[0px_0px_20px_rgba(220,38,38,0.8)] hover:bg-red-600"
           >
             🗑 Vaciar Carrito
-          </button>
-        </div>
+          </motion.button>
+        </motion.div>
       )}
 
-      <button
+      {/* Botón para realizar pedido */}
+      <motion.button
+        whileHover={{ scale: 1.05 }}
         onClick={realizarPedido}
-        className="mt-5 bg-blue-500 text-white px-4 py-2 rounded"
+        className="mt-6 bg-blue-500 text-black font-semibold px-6 py-3 rounded-lg transition-all cursor-pointer
+                   hover:shadow-[0px_0px_20px_rgba(59,130,246,0.8)] hover:bg-blue-600"
       >
         🛒 Realizar Pedido
-      </button>
-    </div>
-  );
+      </motion.button>
+    </motion.div>
+  </div>
+);
+
 }
 
 export default CrearPedido;
