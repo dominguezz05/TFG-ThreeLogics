@@ -20,9 +20,17 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [lastScrollY]);
 
+  const handleScrollToProcess = (e) => {
+    e.preventDefault();
+    const section = document.getElementById("work-process");
+    if (section) {
+      section.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <nav
-      className={`fixed top-0 left-0 w-full bg-black text-white px-8 py-4 flex justify-between items-center transition-transform duration-300 ${
+      className={`fixed top-0 left-0 w-full bg-black text-white px-8 py-4 flex justify-between items-center transition-transform duration-300 z-50 ${
         showNavbar ? "translate-y-0" : "-translate-y-full"
       }`}
     >
@@ -31,8 +39,32 @@ export default function Navbar() {
         <Link to="/">📦 ThreeLogics</Link>
       </div>
 
-      {/* Botones */}
-      <div className="flex space-x-4 items-center">
+      {/* Nueva sección de información */}
+      <div className="hidden md:flex items-center space-x-6 text-gray-300">
+        <Link to="/about" className="hover:text-white transition">
+          Nosotros
+        </Link>
+        <Link to="/services" className="hover:text-white transition">
+          Servicios
+        </Link>
+        <a
+          href="#work-process"
+          onClick={handleScrollToProcess}
+          className="hover:text-teal-400 transition"
+        >
+          Proceso
+        </a>
+        <span className="text-gray-500">|</span>
+        <a
+          href="mailto:info@threelogics.com"
+          className="text-teal-400 hover:text-teal-300 transition"
+        >
+          info@threelogics.com
+        </a>
+      </div>
+
+      {/* Botones de autenticación */}
+      <div className="hidden md:flex space-x-4 items-center">
         {usuario ? (
           <>
             <span className="text-sm">👤 {usuario?.nombre || "Usuario"}</span>
