@@ -1,9 +1,13 @@
 import "../styles/Home.css"; // Asegúrate de tener la ruta correcta para tu CSS
 
+import Hero from "../components/Hero";
 
 const Home = () => {
   
   return (
+    <>
+    <Hero />
+
     <div className="home-container">
 
       {/* Main Content */}
@@ -206,6 +210,7 @@ const Home = () => {
         <p>&copy; 2025 Mi Aplicación. Todos los derechos reservados.</p>
       </footer>
     </div>
+   </>
   );
 };
 

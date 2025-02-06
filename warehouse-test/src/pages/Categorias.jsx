@@ -7,6 +7,7 @@ import { toast } from "react-toastify"; // 📌 Importamos toast para notificaci
 function Categorias() {
   const { usuario } = useContext(AuthContext);
   const [categorias, setCategorias] = useState([]);
+  const [notificacionMostrada, setNotificacionMostrada] = useState(false); // ✅ Estado para evitar duplicados
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -18,15 +19,25 @@ function Categorias() {
         });
 
         setCategorias(response.data);
-        toast.success("✅ Categorías cargadas correctamente");
+
+        // ✅ Mostrar notificación solo si aún no se ha mostrado
+        if (!notificacionMostrada) {
+          toast.success("✅ Categorías cargadas correctamente");
+          setNotificacionMostrada(true); // ✅ Evitar notificaciones duplicadas
+        }
       } catch (error) {
         console.error("Error al obtener categorías:", error);
-        toast.error("❌ No se pudieron cargar las categorías.");
+        
+        // ✅ Evitar mostrar la notificación de error varias veces
+        if (!notificacionMostrada) {
+          toast.error("❌ No se pudieron cargar las categorías.");
+          setNotificacionMostrada(true);
+        }
       }
     };
 
     fetchCategorias();
-  }, []);
+  }, [notificacionMostrada]); // ✅ Se ejecuta solo si la notificación aún no ha sido mostrada
 
   return (
     <div className="p-6 max-w-6xl mx-auto">
