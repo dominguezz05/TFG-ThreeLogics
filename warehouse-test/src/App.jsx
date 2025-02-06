@@ -2,7 +2,6 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "./context/AuthContext";
 import Navbar from "./components/Navbar";
-//import Header from "./components/Header";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Productos from "./pages/Productos";
