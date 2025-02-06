@@ -4,11 +4,11 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 const testimonials = [
   {
     companyLogo: "https://via.placeholder.com/100x50", // Reemplazar con logo real
-    companyName: "Postiz",
+    companyName: "Github",
     quote:
       "El profesionalismo y las habilidades organizativas excepcionales hacen que la colaboración sea un placer. El equipo de Serge destaca en cada tarea, superando expectativas. Un verdadero placer trabajar con ellos.",
-    author: "Nevo David",
-    position: "Fundador de Postiz",
+    author: "Adrián Vaquero",
+    position: "CoFunder ThreeLogics",
     avatar: "https://via.placeholder.com/50", // Reemplazar con imagen real
   },
   {
