@@ -3,6 +3,7 @@ import { api } from "../services/api";
 import { AuthContext } from "../context/AuthContext"; // 👈 Importamos el contexto
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify"; // ✅ Importar toast para notificaciones
+import { motion } from "framer-motion";
 
 
 function Login() {
@@ -52,35 +53,65 @@ function Login() {
     }
   };
 
-  return (
-    <div className="p-5 max-w-md mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Iniciar Sesión</h1>
-      <form onSubmit={handleLogin} className="grid gap-3">
-        <input
+ 
+return (
+  <div className="h-screen w-screen flex justify-center items-center bg-black">
+    {/* Contenedor con animación */}
+    <motion.div
+      initial={{ opacity: 0, y: 50 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 1, ease: "easeOut" }}
+      className="bg-gradient-to-b from-gray-900/90 to-black/90 backdrop-blur-lg text-white rounded-lg shadow-2xl max-w-md w-full p-8"
+    >
+      <motion.h1
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1, delay: 0.2 }}
+        className="text-3xl font-bold mb-6 text-center text-teal-400"
+      >
+        Iniciar Sesión
+      </motion.h1>
+
+      <form onSubmit={handleLogin} className="grid space-y-4">
+        <motion.input
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, delay: 0.3 }}
           type="text"
           placeholder="Correo"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="border p-2"
+          className="border border-gray-700 bg-gray-800 text-white p-3 rounded-lg focus:ring-2 focus:ring-teal-400 focus:outline-none"
           required
         />
-        <input
+
+        <motion.input
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
           type="password"
           placeholder="Contraseña"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="border p-2"
+          className="border border-gray-700 bg-gray-800 text-white p-3 rounded-lg focus:ring-2 focus:ring-teal-400 focus:outline-none"
           required
         />
-        <button
+
+        {/* Botón con efecto hover dinámico */}
+        <motion.button
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8, delay: 0.5 }}
           type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded"
+          className="relative px-6 py-3 bg-teal-500 text-black font-semibold rounded-lg transition-all cursor-pointer
+                     hover:scale-105 hover:shadow-[0px_0px_20px_rgba(45,212,191,0.8)] hover:bg-teal-600"
         >
           Ingresar
-        </button>
+        </motion.button>
       </form>
-    </div>
-  );
+    </motion.div>
+  </div>
+);
 }
 
 export default Login;
