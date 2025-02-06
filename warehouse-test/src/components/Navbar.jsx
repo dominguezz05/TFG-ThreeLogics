@@ -1,45 +1,41 @@
 import { Link } from "react-router-dom";
-import { useContext } from "react";
+import { useContext, useState, useEffect } from "react";
 import { AuthContext } from "../context/AuthContext";
+
 export default function Navbar() {
   const { usuario, logout } = useContext(AuthContext);
+  const [showNavbar, setShowNavbar] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      if (Math.abs(currentScrollY - lastScrollY) > 5) {
+        setShowNavbar(currentScrollY < lastScrollY || currentScrollY < 50);
+        setLastScrollY(currentScrollY);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [lastScrollY]);
+
   return (
-    <nav className="flex justify-between items-center px-8 py-4 bg-black text-white">
+    <nav
+      className={`fixed top-0 left-0 w-full bg-black text-white px-8 py-4 flex justify-between items-center transition-transform duration-300 ${
+        showNavbar ? "translate-y-0" : "-translate-y-full"
+      }`}
+    >
       {/* Logo */}
       <div className="text-2xl font-bold text-teal-400">
         <Link to="/">📦 ThreeLogics</Link>
       </div>
 
-      {/* Menú de navegación */}
-      <nav>
-        <ul className="hidden md:flex gap-6">
-          <li>
-            <Link to="/productos" className="hover:text-teal-400 transition">
-              Productos
-            </Link>
-          </li>
-          <li>
-            <Link to="/pedidos" className="hover:text-teal-400 transition">
-              Pedidos
-            </Link>
-          </li>
-          <li>
-            <Link to="/movimientos" className="hover:text-teal-400 transition">
-              Movimientos
-            </Link>
-          </li>
-          <li>
-            <Link to="/dashboard" className="hover:text-teal-400 transition">
-              Dashboard
-            </Link>
-          </li>
-        </ul>
-      </nav>
       {/* Botones */}
       <div className="flex space-x-4 items-center">
         {usuario ? (
           <>
-            <span className="text-sm">👤 {usuario.nombre}</span>
+            <span className="text-sm">👤 {usuario?.nombre || "Usuario"}</span>
             <button
               onClick={logout}
               className="bg-red-500 hover:bg-red-700 cursor-pointer text-white px-3 py-1 rounded transition"
