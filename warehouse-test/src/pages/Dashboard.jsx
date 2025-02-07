@@ -83,12 +83,11 @@ export default function Dashboard() {
 
   return (
     <div
-      className={
-        modoOscuro
-          ? "p-5 bg-gray-900 text-gray-300"
-          : "p-5 bg-white text-gray-900"
-      }
-    >
+    className={`pt-20  p-5 ${
+      modoOscuro ? "bg-gray-900 text-gray-300" : "bg-white text-gray-900"
+    }`}
+  >
+  
       <h1 className="text-2xl font-bold mb-4">📊 Dashboard de Estadísticas</h1>
 
       {/* Botón de Modo Claro/Oscuro */}
