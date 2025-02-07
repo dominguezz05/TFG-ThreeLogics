@@ -3,21 +3,30 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const testimonials = [
   {
-    companyLogo: "https://via.placeholder.com/100x50", // Reemplazar con logo real
+    companyLogo: "https://via.placeholder.com/100x50",
     companyName: "Github",
     quote:
       "El profesionalismo y las habilidades organizativas excepcionales hacen que la colaboración sea un placer. El equipo de Serge destaca en cada tarea, superando expectativas. Un verdadero placer trabajar con ellos.",
     author: "Adrián Vaquero",
     position: "CoFunder ThreeLogics",
-    avatar: "https://via.placeholder.com/50", // Reemplazar con imagen real
+    avatar: "https://via.placeholder.com/50",
   },
   {
     companyLogo: "https://via.placeholder.com/100x50",
     companyName: "TechCorp",
     quote:
       "Un equipo increíblemente dedicado y profesional. Su enfoque meticuloso y atención al detalle elevaron nuestro proyecto a otro nivel.",
-    author: "Laura Martínez",
-    position: "CEO de TechCorp",
+    author: "Iker Dominguez",
+    position: "CoFunder ThreeLogics",
+    avatar: "https://via.placeholder.com/50",
+  },
+  {
+    companyLogo: "https://via.placeholder.com/100x50",
+    companyName: "Github",
+    quote:
+      "El profesionalismo y las habilidades organizativas excepcionales hacen que la colaboración sea un placer. El equipo de Serge destaca en cada tarea, superando expectativas. Un verdadero placer trabajar con ellos.",
+    author: "Daniel Ramiro",
+    position: "CoFunder ThreeLogics",
     avatar: "https://via.placeholder.com/50",
   },
 ];
@@ -31,7 +40,7 @@ export default function TestimonialSlider() {
     setCurrent((prev) => (prev === testimonials.length - 1 ? 0 : prev + 1));
 
   return (
-    <div className="flex flex-col items-center text-center p-8 bg-black text-white rounded-lg">
+    <div className="flex flex-col items-center text-center p-8 bg-black text-white">
       <h2 className="text-3xl font-semibold mb-2">
         Únete al <span className="text-green-400">ThreeLogics Club</span>
       </h2>
