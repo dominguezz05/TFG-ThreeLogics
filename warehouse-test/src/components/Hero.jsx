@@ -9,20 +9,20 @@ export default function Hero() {
           initial={{ opacity: 0, y: -30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
-          className="font-dm text-6xl drop-shadow-lg text-left bg-gradient-to-r from-white via-gray-200 to-black bg-clip-text text-transparent inline-block tracking-tight leading-tight"
+          className="font-dm text-6xl drop-shadow-lg text-left bg-gradient-to-r from-white via-gray-300 to-gray-600 bg-clip-text text-transparent inline-block tracking-tight leading-tight"
         >
-          Optimiza tu
+          Optimiza tu 
         </motion.h1>
         <motion.h2
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.2 }}
-          className="text-5xl font-bold text-teal-400 mt-2 drop-shadow-lg"
+          className="text-5xl font-bold mt-2 drop-shadow-lg bg-gradient-to-r from-teal-200 via-teal-400 to-teal-600 bg-clip-text text-transparent"
         >
           Gestión de almacenes
         </motion.h2>
         <p className="mt-4 text-gray-300 text-lg font-fira">
-          ThreeLogics mejora la eficiencia y control en la logística
+          ThreeLogics mejora la eficiencia y   control en la logística
           empresarial.
         </p>
         <div className="mt-6 flex gap-6">

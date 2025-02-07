@@ -68,6 +68,7 @@ function App() {
           element={usuario ? <CrearPedido /> : <Navigate to="/" />}
         />
         <Route path="/pago/:id" element={<PasarelaPago />} />
+        
 
         <Route path="*" element={<h1>404 - Página no encontrada</h1>} />
       </Routes>

@@ -39,17 +39,17 @@ export default function WebDevelopment() {
           {/* Tecnologías utilizadas */}
           <div className="flex space-x-6 mt-6">
             <img
-              src="./public/react.svg"
+              src="./react.svg"
               alt="React"
               className="w-8 h-8 transition duration-300 hover:scale-110 hover:text-teal-400"
             />
             <img
-              src="./public/typescript.svg"
+              src="./typescript.svg"
               alt="TypeScript"
               className="w-8 h-8 transition duration-300 hover:scale-110 hover:text-teal-400"
             />
             <img
-              src="./public/next-js.svg"
+              src="./next-js.svg"
               alt="Next.js"
               className="w-8 h-8 transition duration-300 hover:scale-110 hover:text-teal-400 bg-white"
             />
