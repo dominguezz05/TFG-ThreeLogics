@@ -1,18 +1,18 @@
-import { useEffect, useState, useContext } from "react";
+import { useState, useContext } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { api } from "../services/api";
 import { toast } from "react-toastify";
 import { motion } from "framer-motion";
-import { AuthContext } from "../context/AuthContext"; // Ajusta la ruta según tu contexto de autenticación
+import { AuthContext } from "../context/AuthContext";
 
-function PasarelaPago() {
-  const { id } = useParams(); // Obtener el ID del pedido desde la URL
+export default function PasarelaPago() {
+  const { id } = useParams();
   const navigate = useNavigate();
   const [procesando, setProcesando] = useState(false);
-  const [isFlipped, setIsFlipped] = useState(false); // Estado para girar la tarjeta
+  const [isFlipped, setIsFlipped] = useState(false);
 
-  const { user } = useContext(AuthContext); // Obtener usuario logueado
-  const cardHolderName = user?.name || "Usuario Desconocido"; // Nombre del titular
+  const { user } = useContext(AuthContext);
+  const cardHolderName = user?.name || "Usuario Desconocido";
 
   // 🏦 Simular pago después de unos segundos
   const procesarPago = async () => {
@@ -23,12 +23,12 @@ function PasarelaPago() {
       try {
         await api.put(`/pedidos/${id}/estado`, { estado: "enviado" });
         toast.success("✅ Pago realizado con éxito. Pedido enviado.");
-        navigate("/pedidos"); // Redirigir a la lista de pedidos
+        navigate("/pedidos");
       } catch (error) {
         console.error("❌ Error al procesar el pago:", error);
         toast.error("❌ Error al procesar el pago.");
       } finally {
-        setProcesando(false); // ✅ Asegura que procesando se detenga siempre
+        setProcesando(false);
       }
     }, 3000);
   };
@@ -51,8 +51,9 @@ function PasarelaPago() {
         </motion.h1>
 
         <p className="text-gray-400 text-center mb-4">
-          Estás a punto de pagar el pedido <span className="font-bold text-white">#{id}</span>.
-          Ingresa los datos de tu tarjeta y confirma el pago.
+          Estás a punto de pagar el pedido{" "}
+          <span className="font-bold text-white">#{id}</span>. Ingresa los datos
+          de tu tarjeta y confirma el pago.
         </p>
 
         {/* 💳 Tarjeta de crédito interactiva */}
@@ -77,7 +78,10 @@ function PasarelaPago() {
             </p>
             <div className="flex justify-between items-center mt-3">
               <p className="text-sm text-gray-300">
-                Titular: <span className="font-semibold text-white">{cardHolderName}</span>
+                Titular:{" "}
+                <span className="font-semibold text-white">
+                  {cardHolderName}
+                </span>
               </p>
               <p className="text-sm text-gray-300">
                 Exp: <span className="font-semibold text-white">12/25</span>
@@ -88,7 +92,10 @@ function PasarelaPago() {
           {/* Lado trasero */}
           <div
             className="absolute w-full h-full bg-gray-900 p-5 rounded-lg shadow-lg flex flex-col justify-end"
-            style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
+            style={{
+              backfaceVisibility: "hidden",
+              transform: "rotateY(180deg)",
+            }}
           >
             <div className="bg-gray-700 h-6 w-full mb-3"></div>
             <p className="text-center text-white text-lg font-bold tracking-widest">
@@ -146,5 +153,3 @@ function PasarelaPago() {
     </div>
   );
 }
-
-export default PasarelaPago;

@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify"; // ✅ Importar para notificaciones
 import { motion } from "framer-motion";
 
-function Pedidos() {
+export default function Pedidos() {
   const { usuario } = useContext(AuthContext);
   const [pedidos, setPedidos] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -32,22 +32,20 @@ function Pedidos() {
   const actualizarEstado = async (pedidoId, nuevoEstado) => {
     try {
       await api.put(`/pedidos/${pedidoId}/estado`, { estado: nuevoEstado });
-      
+
       toast.success(`Estado actualizado a "${nuevoEstado}"`);
-  
+
       // 🔄 ACTUALIZAR el estado del pedido en la lista sin recargar manualmente
       setPedidos((prevPedidos) =>
         prevPedidos.map((pedido) =>
           pedido.id === pedidoId ? { ...pedido, estado: nuevoEstado } : pedido
         )
       );
-  
     } catch (error) {
       console.error("Error al actualizar el estado del pedido:", error);
       toast.error("Error al actualizar el estado del pedido");
     }
   };
-  
 
   // ✅ Función para eliminar un pedido (Solo si está "pendiente")
   const eliminarPedido = async (pedidoId) => {
@@ -71,12 +69,9 @@ function Pedidos() {
       toast.error("❌ No se pudo pagar el pedido");
     }
   };
-      
 
   if (loading) return <p>Cargando pedidos...</p>;
   if (error) return <p className="text-red-500">{error}</p>;
-
-
 
   return (
     <div className="w-full min-h-screen bg-black flex justify-center pt-10">
@@ -90,15 +85,17 @@ function Pedidos() {
           📦 Mis Pedidos
         </motion.h1>
         {/* 📌 Botón para ir a la página de crear pedido */}
-      <button
-        onClick={() => navigate("/crear-pedido")}
-        className="mb-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
-      >
-        ➕ Crear Nuevo Pedido
-      </button>
-  
+        <button
+          onClick={() => navigate("/crear-pedido")}
+          className="mb-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+        >
+          ➕ Crear Nuevo Pedido
+        </button>
+
         {pedidos.length === 0 ? (
-          <p className="text-gray-400 text-center text-lg">No tienes pedidos realizados.</p>
+          <p className="text-gray-400 text-center text-lg">
+            No tienes pedidos realizados.
+          </p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {pedidos.map((pedido) => (
@@ -112,11 +109,13 @@ function Pedidos() {
                 <h2 className="text-xl font-semibold text-teal-400">
                   📦 Pedido #{pedido.id}
                 </h2>
-                <p className="text-gray-400">📅 {new Date(pedido.fecha).toLocaleDateString()}</p>
+                <p className="text-gray-400">
+                  📅 {new Date(pedido.fecha).toLocaleDateString()}
+                </p>
                 <p className="font-bold text-lg text-green-400">
                   💰 Total: ${pedido.total.toFixed(2)}
                 </p>
-  
+
                 {/* 🔄 Menú desplegable para cambiar estado (Solo usuario) */}
                 {usuario.rol === "usuario" ? (
                   <div className="mt-3">
@@ -124,12 +123,18 @@ function Pedidos() {
                     <select
                       className="ml-2 p-2 border border-gray-700 bg-gray-800 text-white rounded-lg cursor-pointer focus:ring-2 focus:ring-teal-400"
                       value={pedido.estado}
-                      onChange={(e) => actualizarEstado(pedido.id, e.target.value)}
+                      onChange={(e) =>
+                        actualizarEstado(pedido.id, e.target.value)
+                      }
                     >
                       <option value="pendiente">🟡 Pendiente</option>
                       <option value="pagar">💳 Pagar</option>
-                      <option value="enviado" disabled>📦 Enviado (Automático)</option>
-                      <option value="completado" disabled>✅ Completado (Automático)</option>
+                      <option value="enviado" disabled>
+                        📦 Enviado (Automático)
+                      </option>
+                      <option value="completado" disabled>
+                        ✅ Completado (Automático)
+                      </option>
                     </select>
                   </div>
                 ) : (
@@ -147,7 +152,7 @@ function Pedidos() {
                     Estado: {pedido.estado}
                   </p>
                 )}
-  
+
                 {/* 🔹 Si el estado es "Pagar", mostrar botón para ir a la pasarela de pago */}
                 {pedido.estado === "pagar" && (
                   <motion.button
@@ -159,18 +164,19 @@ function Pedidos() {
                     💳 Ir a Pagar
                   </motion.button>
                 )}
-  
+
                 {/* 🛒 Productos en el pedido */}
                 <h3 className="mt-3 font-semibold text-white">🛍️ Productos:</h3>
                 <ul className="list-disc pl-5 text-gray-400">
                   {pedido.DetallePedidos?.map((detalle) => (
                     <li key={detalle.id}>
-                      {detalle.Producto?.nombre} - {detalle.cantidad} unidades - 💲
+                      {detalle.Producto?.nombre} - {detalle.cantidad} unidades -
+                      💲
                       {detalle.subtotal.toFixed(2)}
                     </li>
                   ))}
                 </ul>
-  
+
                 {/* 🗑 Botón para eliminar pedido (Solo si está "pendiente") */}
                 {pedido.estado === "pendiente" && (
                   <motion.button
@@ -189,8 +195,4 @@ function Pedidos() {
       </div>
     </div>
   );
-  
-  
 }
-
-export default Pedidos;
