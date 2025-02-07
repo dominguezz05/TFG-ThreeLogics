@@ -83,21 +83,23 @@ export default function Dashboard() {
 
   return (
     <div
-    className={`pt-20  p-5 ${
-      modoOscuro ? "bg-gray-900 text-gray-300" : "bg-white text-gray-900"
-    }`}
-  >
+      className={`relative pt-20 p-5 ${
+        modoOscuro ? "bg-gray-900 text-gray-300" : "bg-white text-gray-900"
+      }`}
+    >
+      {/* Contenedor del título y el botón en la misma fila */}
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-2xl font-bold">📊 Dashboard de Estadísticas</h1>
   
-      <h1 className="text-2xl font-bold mb-4">📊 Dashboard de Estadísticas</h1>
-
-      {/* Botón de Modo Claro/Oscuro */}
-      <button
-        onClick={() => setModoOscuro(!modoOscuro)}
-        className="absolute top-4 right-4 bg-gray-700 hover:bg-gray-600 text-white px-3 py-2 rounded-md"
-      >
-        {modoOscuro ? "🌞 Modo Claro" : "🌙 Modo Oscuro"}
-      </button>
-
+        {/* Botón de Modo Claro/Oscuro */}
+        <button
+          onClick={() => setModoOscuro(!modoOscuro)}
+          className="bg-gray-700 hover:bg-gray-600 text-white px-3 py-2 rounded-md"
+        >
+          {modoOscuro ? "🌞 Modo Claro" : "🌙 Modo Oscuro"}
+        </button>
+      </div>
+  
       {/* 📌 Estadísticas principales */}
       <div className="grid grid-cols-3 gap-6">
         <PanelEstadistica
@@ -116,7 +118,7 @@ export default function Dashboard() {
           color="bg-yellow-100"
         />
       </div>
-
+  
       {/* 📥 Botón para generar reporte PDF */}
       <button
         onClick={descargarPDF}
@@ -124,7 +126,7 @@ export default function Dashboard() {
       >
         📥 Descargar Reporte PDF
       </button>
-
+  
       {/* 📊 Comparación de Entradas vs Salidas */}
       <div className="mt-6 border-b border-gray-700 pb-6">
         <h2 className="text-2xl font-semibold">🔄 Entradas vs Salidas</h2>
@@ -136,7 +138,7 @@ export default function Dashboard() {
           aria-label="Gráfico de comparación de Entradas y Salidas"
         />
       </div>
-
+  
       {/* 📊 Productos Más Movidos */}
       <div className="mt-6">
         <h2 className="text-2xl font-semibold">🔝 Productos Más Movidos</h2>
@@ -148,15 +150,7 @@ export default function Dashboard() {
           aria-label="Gráfico de los productos más movidos"
         />
       </div>
-
-      {/* Botón de Modo Claro/Oscuro */}
-      <button
-        onClick={() => setModoOscuro(!modoOscuro)}
-        className="absolute top-4 right-4 bg-gray-700 hover:bg-gray-600 text-white px-3 py-2 rounded-md"
-      >
-        {modoOscuro ? "🌞 Modo Claro" : "🌙 Modo Oscuro"}
-      </button>
-
+  
       {/* 🔥 Categoría Más Popular */}
       <div className="mt-6 p-4 border rounded bg-yellow-100">
         <h2 className="text-xl font-semibold">🔥 Categoría Más Popular</h2>
@@ -166,4 +160,6 @@ export default function Dashboard() {
       </div>
     </div>
   );
+  
+  
 }
