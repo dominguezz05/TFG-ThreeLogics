@@ -27,7 +27,9 @@ export default function Navbar() {
       window.location.href = `/#${sectionId}`;
     } else {
       // Si el usuario ya está en Home, solo hacemos scroll
-      document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth" });
+      document
+        .getElementById(sectionId)
+        ?.scrollIntoView({ behavior: "smooth" });
     }
   };
 
@@ -43,7 +45,11 @@ export default function Navbar() {
           onClick={() => handleScrollToSection("hero")}
           className="flex items-center space-x-3 bg-transparent border-none cursor-pointer"
         >
-          <img src="/LogoBlancoSobreNegro.png" alt="ThreeLogics Logo" className="h-10 w-auto" />
+          <img
+            src="/LogoBlancoSobreNegro.png"
+            alt="ThreeLogics Logo"
+            className="h-10 w-auto"
+          />
           <span className="text-2xl font-bold text-teal-400">ThreeLogics</span>
         </button>
       </div>

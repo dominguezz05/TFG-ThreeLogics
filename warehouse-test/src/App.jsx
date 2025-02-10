@@ -14,11 +14,10 @@ import Home from "./pages/Home";
 import PasarelaPago from "./pages/PasarelaPago";
 import Pedidos from "./pages/Pedidos";
 import CrearPedido from "./pages/CrearPedido";
-import Page404 from "./components/Page404"; // Crea este componente
+import Page404 from "./components/Page404";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-// Componente para proteger rutas privadas
 const PrivateRoute = () => {
   const { usuario } = useContext(AuthContext);
   return usuario ? <Outlet /> : <Navigate to="/login" />;
@@ -26,7 +25,6 @@ const PrivateRoute = () => {
 
 function App() {
   const { usuario } = useContext(AuthContext);
-  
 
   return (
     <div>
@@ -41,44 +39,6 @@ function App() {
           path="/register"
           element={usuario ? <Navigate to="/productos" /> : <Register />}
         />
-<<<<<<< HEAD
-        <Route
-          path="/productos"
-          element={usuario ? <Productos /> : <Navigate to="/login" />}
-        />
-        <Route
-          path="/movimientos"
-          element={usuario ? <Movimientos /> : <Navigate to="/login" />}
-        />
-        <Route
-          path="/categorias"
-          element={usuario ? <Categorias /> : <Navigate to="/login" />}
-        />
-        <Route
-          path="/crear-producto"
-          element={usuario ? <CrearProducto /> : <Navigate to="/login" />}
-        />
-        <Route
-          path="/crear-categoria"
-          element={usuario ? <CrearCategoria /> : <Navigate to="/login" />}
-        />
-        <Route
-          path="/dashboard"
-          element={usuario ? <Dashboard /> : <Navigate to="/" />}
-        />
-
-        <Route
-          path="/pedidos"
-          element={usuario ? <Pedidos /> : <Navigate to="/" />}
-        />
-        <Route
-          path="/crear-pedido"
-          element={usuario ? <CrearPedido /> : <Navigate to="/" />}
-        />
-        <Route path="/pago/:id" element={<PasarelaPago />} />
-=======
-        
->>>>>>> bc9b9f83f0468681b545c635caa007e176d34cc5
 
         {/* ✅ Agrupamos rutas privadas dentro de <PrivateRoute> */}
         <Route element={<PrivateRoute />}>
