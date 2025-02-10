@@ -14,6 +14,7 @@ import Home from "./pages/Home";
 import PasarelaPago from "./pages/PasarelaPago";
 import Pedidos from "./pages/Pedidos";
 import CrearPedido from "./pages/CrearPedido";
+import Page404 from "./components/Page404"; // Crea este componente
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -56,7 +57,7 @@ function App() {
         </Route>
 
         <Route path="/pago/:id" element={<PasarelaPago />} />
-        <Route path="*" element={<h1>404 - Página no encontrada</h1>} />
+        <Route path="*" element={<Page404 />} />
       </Routes>
       <ToastContainer position="top-right" autoClose={3000} />
     </div>

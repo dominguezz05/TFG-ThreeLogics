@@ -11,7 +11,7 @@ const testimonials = [
       "El profesionalismo y las habilidades organizativas excepcionales hacen que la colaboración sea un placer. El equipo de Serge destaca en cada tarea, superando expectativas. Un verdadero placer trabajar con ellos.",
     author: "Adrián Vaquero",
     position: "CoFunder ThreeLogics",
-    avatar: "https://via.placeholder.com/50",
+    avatar: "src/assets/1.webp",
   },
   {
     companyLogo: google,
@@ -20,7 +20,7 @@ const testimonials = [
       "Un equipo increíblemente dedicado y profesional. Su enfoque meticuloso y atención al detalle elevaron nuestro proyecto a otro nivel.",
     author: "Iker Dominguez",
     position: "CoFunder ThreeLogics",
-    avatar: "https://via.placeholder.com/50",
+    avatar: "src/assets/2.webp",
   },
   {
     companyLogo: githubLogo,
@@ -29,7 +29,7 @@ const testimonials = [
       "El profesionalismo y las habilidades organizativas excepcionales hacen que la colaboración sea un placer. El equipo de Serge destaca en cada tarea, superando expectativas. Un verdadero placer trabajar con ellos.",
     author: "Daniel Ramiro",
     position: "CoFunder ThreeLogics",
-    avatar: "https://via.placeholder.com/50",
+    avatar: "src/assets/3.webp",
   },
 ];
 
