@@ -1,9 +1,9 @@
 import { useState } from "react";
-import githubLogo from "../assets/github1.png";
-import trelloLogo from "../assets/logotrello.png";
-import notionLogo from "../assets/notion1.png";
-import visualLogo from "../assets/vsc.png";
-import davanteLogo from "../assets/davante.png";
+import githubLogo from "../assets/github1.webp";
+import trelloLogo from "../assets/logotrello.webp";
+import notionLogo from "../assets/notion1.webp";
+import visualLogo from "../assets/vsc.webp";
+import davanteLogo from "../assets/davante.webp";
 
 export default function TrustedBy() {
   const [hoveredIndex, setHoveredIndex] = useState(null);
