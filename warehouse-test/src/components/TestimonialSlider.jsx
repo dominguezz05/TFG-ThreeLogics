@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import githubLogo from "../assets/github1.png"; // Importar imágenes locales
-import google from "../assets/google.webp"; // Importar imágenes locales
+import githubLogo from "../assets/github1.png";
+import google from "../assets/google.webp";
 
 const testimonials = [
   {
@@ -11,7 +11,7 @@ const testimonials = [
       "El profesionalismo y las habilidades organizativas excepcionales hacen que la colaboración sea un placer. El equipo de Serge destaca en cada tarea, superando expectativas. Un verdadero placer trabajar con ellos.",
     author: "Adrián Vaquero",
     position: "CoFunder ThreeLogics",
-    avatar: "https://via.placeholder.com/50",
+    avatar: "src/assets/1.webp",
   },
   {
     companyLogo: google,
@@ -20,7 +20,7 @@ const testimonials = [
       "Un equipo increíblemente dedicado y profesional. Su enfoque meticuloso y atención al detalle elevaron nuestro proyecto a otro nivel.",
     author: "Iker Dominguez",
     position: "CoFunder ThreeLogics",
-    avatar: "https://via.placeholder.com/50",
+    avatar: "src/assets/2.webp",
   },
   {
     companyLogo: githubLogo,
@@ -29,7 +29,7 @@ const testimonials = [
       "El profesionalismo y las habilidades organizativas excepcionales hacen que la colaboración sea un placer. El equipo de Serge destaca en cada tarea, superando expectativas. Un verdadero placer trabajar con ellos.",
     author: "Daniel Ramiro",
     position: "CoFunder ThreeLogics",
-    avatar: "https://via.placeholder.com/50",
+    avatar: "src/assets/3.webp",
   },
 ];
 
@@ -37,23 +37,20 @@ export default function TestimonialSlider() {
   const [current, setCurrent] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
 
-  // Cambia al siguiente testimonio
   const nextTestimonial = () =>
     setCurrent((prev) => (prev === testimonials.length - 1 ? 0 : prev + 1));
 
-  // Cambia al testimonio anterior
   const prevTestimonial = () =>
     setCurrent((prev) => (prev === 0 ? testimonials.length - 1 : prev - 1));
 
-  // Autoplay cada 5 segundos
   useEffect(() => {
-    if (isPaused) return; // Si el usuario ha interactuado, detiene el autoplay
+    if (isPaused) return;
     const interval = setInterval(() => {
       nextTestimonial();
     }, 5000);
 
     return () => clearInterval(interval);
-  }, [isPaused, current]); // Dependencias para reiniciar el intervalo al cambiar de testimonio
+  }, [isPaused, current]);
 
   return (
     <div className="flex flex-col items-center text-center p-8 bg-black text-white">
@@ -71,7 +68,7 @@ export default function TestimonialSlider() {
           className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-700 p-2 rounded-full"
           onClick={() => {
             prevTestimonial();
-            setIsPaused(true); // Pausa el autoplay si el usuario interactúa
+            setIsPaused(true);
           }}
         >
           <ChevronLeft className="text-white w-6 h-6" />
@@ -106,7 +103,7 @@ export default function TestimonialSlider() {
           className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-700 p-2 rounded-full"
           onClick={() => {
             nextTestimonial();
-            setIsPaused(true); // Pausa el autoplay si el usuario interactúa
+            setIsPaused(true);
           }}
         >
           <ChevronRight className="text-white w-6 h-6" />
