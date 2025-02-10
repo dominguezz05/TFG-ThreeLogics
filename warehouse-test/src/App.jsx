@@ -14,13 +14,10 @@ import Home from "./pages/Home";
 import PasarelaPago from "./pages/PasarelaPago";
 import Pedidos from "./pages/Pedidos";
 import CrearPedido from "./pages/CrearPedido";
-import Page404 from "./components/Page404"; // Crea este componente
-
+import Page404 from "./components/Page404";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-
-// Componente para proteger rutas privadas
 const PrivateRoute = () => {
   const { usuario } = useContext(AuthContext);
   return usuario ? <Outlet /> : <Navigate to="/login" />;
@@ -28,7 +25,6 @@ const PrivateRoute = () => {
 
 function App() {
   const { usuario } = useContext(AuthContext);
-  
 
   return (
     <div>
