@@ -6,7 +6,7 @@ import TestimonialSlider from "../components/TestimonialSlider";
 import Footer from "../components/Footer";
 import Services from "../components/Services";
 import WebDevelopment from "../components/WebDevelopment";
-import AppDevelopment from "../components/AppDevelopment";
+
 import InstagramGallery from "../components/InstragramGallery";
 
 const Home = () => {
@@ -25,7 +25,7 @@ const Home = () => {
         <Services />
       </div>
       <WebDevelopment />
-      <AppDevelopment />
+     
       <InstagramGallery /> 
       <div id="testimonial-slider">
         <TestimonialSlider />

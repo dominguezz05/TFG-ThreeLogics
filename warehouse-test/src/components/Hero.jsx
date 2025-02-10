@@ -26,24 +26,18 @@ export default function Hero() {
           empresarial.
         </p>
         <div className="mt-6 flex gap-6">
+        
           <motion.button
-            whileHover={{
-              scale: 1.1,
-              boxShadow: "0px 0px 20px rgba(45, 212, 191, 0.8)",
-            }}
-            className="px-6 py-3 bg-teal-500 text-black rounded-lg font-medium transition-all"
-          >
-            Solicitar Demo
-          </motion.button>
-          <motion.button
-            whileHover={{
-              scale: 1.1,
-              boxShadow: "0px 0px 20px rgba(45, 212, 191, 0.8)",
-            }}
-            className="px-6 py-3 border border-teal-500 text-white rounded-lg font-medium transition-all hover:bg-teal-500"
-          >
-            Más Información
-          </motion.button>
+  whileHover={{
+    scale: 1.1,
+    boxShadow: "0px 0px 20px rgba(45, 212, 191, 0.8)",
+  }}
+  onClick={() => document.getElementById("footer").scrollIntoView({ behavior: "smooth" })}
+  className="px-6 py-3 border border-teal-500 text-white rounded-lg font-medium transition-all hover:bg-teal-500 cursor-pointer"
+>
+  Más Información
+</motion.button>
+
         </div>
       </div>
 

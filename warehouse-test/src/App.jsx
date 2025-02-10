@@ -15,8 +15,10 @@ import PasarelaPago from "./pages/PasarelaPago";
 import Pedidos from "./pages/Pedidos";
 import CrearPedido from "./pages/CrearPedido";
 import Page404 from "./components/Page404"; // Crea este componente
+
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
 
 // Componente para proteger rutas privadas
 const PrivateRoute = () => {
