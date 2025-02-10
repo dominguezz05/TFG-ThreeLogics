@@ -64,7 +64,7 @@ export default function Hero() {
         <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-black via-transparent to-transparent"></div>
 
         <img
-          src="./map3.webp"
+          src="src/assets/map3.webp"
           alt="Almacén"
           className="w-full h-full object-cover"
         />

@@ -10,7 +10,7 @@ const InstagramGallery = () => {
         transition={{ duration: 0.8 }}
         viewport={{ once: false, amount: 0.2 }} // Reaparece con scroll
       >
-        {["/1.png", "/2.png", "/3.png"].map((img, index) => (
+        {["src/assets/1.webp", "src/assets/2.webp", "src/assets/3.webp"].map((img, index) => (
           <motion.div
             key={index}
             initial={{ opacity: 0, y: 50 }}

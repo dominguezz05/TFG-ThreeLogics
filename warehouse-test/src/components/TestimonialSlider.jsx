@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import githubLogo from "../assets/github1.png"; // Importar imágenes locales
+import githubLogo from "../assets/github1.webp"; // Importar imágenes locales
 import google from "../assets/google.webp"; // Importar imágenes locales
 
 const testimonials = [

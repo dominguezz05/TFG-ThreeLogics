@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, Outlet } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "./context/AuthContext";
 import Navbar from "./components/Navbar";
@@ -17,8 +17,15 @@ import CrearPedido from "./pages/CrearPedido";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+// Componente para proteger rutas privadas
+const PrivateRoute = () => {
+  const { usuario } = useContext(AuthContext);
+  return usuario ? <Outlet /> : <Navigate to="/login" />;
+};
+
 function App() {
   const { usuario } = useContext(AuthContext);
+  
 
   return (
     <div>
@@ -34,42 +41,21 @@ function App() {
           path="/register"
           element={usuario ? <Navigate to="/productos" /> : <Register />}
         />
-        <Route
-          path="/productos"
-          element={usuario ? <Productos /> : <Navigate to="/login" />}
-        />
-        <Route
-          path="/movimientos"
-          element={usuario ? <Movimientos /> : <Navigate to="/login" />}
-        />
-        <Route
-          path="/categorias"
-          element={usuario ? <Categorias /> : <Navigate to="/login" />}
-        />
-        <Route
-          path="/crear-producto"
-          element={usuario ? <CrearProducto /> : <Navigate to="/login" />}
-        />
-        <Route
-          path="/crear-categoria"
-          element={usuario ? <CrearCategoria /> : <Navigate to="/login" />}
-        />
-        <Route
-          path="/dashboard"
-          element={usuario ? <Dashboard /> : <Navigate to="/" />}
-        />
-
-        <Route
-          path="/pedidos"
-          element={usuario ? <Pedidos /> : <Navigate to="/" />}
-        />
-        <Route
-          path="/crear-pedido"
-          element={usuario ? <CrearPedido /> : <Navigate to="/" />}
-        />
-        <Route path="/pago/:id" element={<PasarelaPago />} />
         
 
+        {/* ✅ Agrupamos rutas privadas dentro de <PrivateRoute> */}
+        <Route element={<PrivateRoute />}>
+          <Route path="/productos" element={<Productos />} />
+          <Route path="/movimientos" element={<Movimientos />} />
+          <Route path="/categorias" element={<Categorias />} />
+          <Route path="/crear-producto" element={<CrearProducto />} />
+          <Route path="/crear-categoria" element={<CrearCategoria />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/pedidos" element={<Pedidos />} />
+          <Route path="/crear-pedido" element={<CrearPedido />} />
+        </Route>
+
+        <Route path="/pago/:id" element={<PasarelaPago />} />
         <Route path="*" element={<h1>404 - Página no encontrada</h1>} />
       </Routes>
       <ToastContainer position="top-right" autoClose={3000} />
