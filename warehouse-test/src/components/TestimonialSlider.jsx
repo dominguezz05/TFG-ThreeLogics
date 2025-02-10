@@ -10,7 +10,7 @@ const testimonials = [
     quote:
       "El profesionalismo y las habilidades organizativas excepcionales hacen que la colaboración sea un placer. El equipo de Serge destaca en cada tarea, superando expectativas. Un verdadero placer trabajar con ellos.",
     author: "Adrián Vaquero",
-    position: "CoFunder ThreeLogics",
+    position: "CoFounder ThreeLogics",
     avatar: "src/assets/1.webp",
   },
   {
@@ -19,7 +19,7 @@ const testimonials = [
     quote:
       "Un equipo increíblemente dedicado y profesional. Su enfoque meticuloso y atención al detalle elevaron nuestro proyecto a otro nivel.",
     author: "Iker Dominguez",
-    position: "CoFunder ThreeLogics",
+    position: "CoFounder ThreeLogics",
     avatar: "src/assets/2.webp",
   },
   {
@@ -28,7 +28,7 @@ const testimonials = [
     quote:
       "El profesionalismo y las habilidades organizativas excepcionales hacen que la colaboración sea un placer. El equipo de Serge destaca en cada tarea, superando expectativas. Un verdadero placer trabajar con ellos.",
     author: "Daniel Ramiro",
-    position: "CoFunder ThreeLogics",
+    position: "CoFounder ThreeLogics",
     avatar: "src/assets/3.webp",
   },
 ];
@@ -65,7 +65,7 @@ export default function TestimonialSlider() {
       <div className="relative w-full max-w-2xl bg-gray-900 p-6 rounded-xl">
         {/* Botón Izquierdo */}
         <button
-          className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-700 p-2 rounded-full"
+          className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-700 p-2 rounded-full cursor-pointer"
           onClick={() => {
             prevTestimonial();
             setIsPaused(true);
@@ -100,7 +100,7 @@ export default function TestimonialSlider() {
 
         {/* Botón Derecho */}
         <button
-          className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-700 p-2 rounded-full"
+          className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-700 p-2 rounded-full cursor-pointer"
           onClick={() => {
             nextTestimonial();
             setIsPaused(true);

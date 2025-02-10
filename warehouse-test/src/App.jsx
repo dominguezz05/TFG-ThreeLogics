@@ -24,7 +24,6 @@ function App() {
     <div>
       <Navbar />
       <Routes>
-        {/* ✅ Ahora la ruta raíz usa Home.jsx */}
         <Route path="/" element={<Home />} />
         <Route
           path="/login"
@@ -68,7 +67,6 @@ function App() {
           element={usuario ? <CrearPedido /> : <Navigate to="/" />}
         />
         <Route path="/pago/:id" element={<PasarelaPago />} />
-        
 
         <Route path="*" element={<h1>404 - Página no encontrada</h1>} />
       </Routes>
