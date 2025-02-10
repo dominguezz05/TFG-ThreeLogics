@@ -1,5 +1,5 @@
 import { useState } from "react";
-import githubLogo from "../assets/github1.webp";
+import githubLogo from "../assets/github1.png";
 import trelloLogo from "../assets/logotrello.webp";
 import notionLogo from "../assets/notion1.webp";
 import visualLogo from "../assets/vsc.webp";

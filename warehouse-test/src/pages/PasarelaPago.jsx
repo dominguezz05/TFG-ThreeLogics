@@ -10,12 +10,25 @@ export default function PasarelaPago() {
   const navigate = useNavigate();
   const [procesando, setProcesando] = useState(false);
   const [isFlipped, setIsFlipped] = useState(false);
+  const [cardNumber, setCardNumber] = useState("");
+  const [expiryDate, setExpiryDate] = useState("");
+  const [cvv, setCvv] = useState("");
 
   const { user } = useContext(AuthContext);
   const cardHolderName = user?.name || "Usuario Desconocido";
 
-  // 🏦 Simular pago después de unos segundos
+  // Datos correctos que deben coincidir
+  const validCardNumber = "4000123456789010";
+  const validExpiryDate = "12/25";
+  const validCvv = "123";
+
+  // 🏦 Simular pago después de validar los datos
   const procesarPago = async () => {
+    if (cardNumber !== validCardNumber || expiryDate !== validExpiryDate || cvv !== validCvv) {
+      toast.error("❌ Error: Los datos de la tarjeta son incorrectos.");
+      return;
+    }
+
     setProcesando(true);
     toast.info("💳 Procesando pago...");
 
@@ -117,6 +130,8 @@ export default function PasarelaPago() {
             type="text"
             placeholder="💳 Número de tarjeta"
             className="border border-gray-700 bg-gray-800 text-white p-3 rounded-lg focus:ring-2 focus:ring-teal-400 focus:outline-none"
+            value={cardNumber}
+            onChange={(e) => setCardNumber(e.target.value)}
             required
           />
           <div className="flex gap-3">
@@ -124,12 +139,16 @@ export default function PasarelaPago() {
               type="text"
               placeholder="📅 Expiración (MM/YY)"
               className="border border-gray-700 bg-gray-800 text-white p-3 rounded-lg w-1/2 focus:ring-2 focus:ring-teal-400 focus:outline-none"
+              value={expiryDate}
+              onChange={(e) => setExpiryDate(e.target.value)}
               required
             />
             <input
               type="text"
               placeholder="🔐 CVV"
               className="border border-gray-700 bg-gray-800 text-white p-3 rounded-lg w-1/2 focus:ring-2 focus:ring-teal-400 focus:outline-none"
+              value={cvv}
+              onChange={(e) => setCvv(e.target.value)}
               required
             />
           </div>

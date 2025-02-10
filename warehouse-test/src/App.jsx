@@ -41,44 +41,7 @@ function App() {
           path="/register"
           element={usuario ? <Navigate to="/productos" /> : <Register />}
         />
-<<<<<<< HEAD
-        <Route
-          path="/productos"
-          element={usuario ? <Productos /> : <Navigate to="/login" />}
-        />
-        <Route
-          path="/movimientos"
-          element={usuario ? <Movimientos /> : <Navigate to="/login" />}
-        />
-        <Route
-          path="/categorias"
-          element={usuario ? <Categorias /> : <Navigate to="/login" />}
-        />
-        <Route
-          path="/crear-producto"
-          element={usuario ? <CrearProducto /> : <Navigate to="/login" />}
-        />
-        <Route
-          path="/crear-categoria"
-          element={usuario ? <CrearCategoria /> : <Navigate to="/login" />}
-        />
-        <Route
-          path="/dashboard"
-          element={usuario ? <Dashboard /> : <Navigate to="/" />}
-        />
-
-        <Route
-          path="/pedidos"
-          element={usuario ? <Pedidos /> : <Navigate to="/" />}
-        />
-        <Route
-          path="/crear-pedido"
-          element={usuario ? <CrearPedido /> : <Navigate to="/" />}
-        />
-        <Route path="/pago/:id" element={<PasarelaPago />} />
-=======
         
->>>>>>> bc9b9f83f0468681b545c635caa007e176d34cc5
 
         {/* ✅ Agrupamos rutas privadas dentro de <PrivateRoute> */}
         <Route element={<PrivateRoute />}>
