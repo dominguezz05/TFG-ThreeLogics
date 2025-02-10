@@ -39,6 +39,7 @@ function App() {
           path="/register"
           element={usuario ? <Navigate to="/productos" /> : <Register />}
         />
+        
 
         {/* ✅ Agrupamos rutas privadas dentro de <PrivateRoute> */}
         <Route element={<PrivateRoute />}>

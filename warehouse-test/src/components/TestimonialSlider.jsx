@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import githubLogo from "../assets/github1.webp"; // Importar imágenes locales
-import google from "../assets/google.webp"; // Importar imágenes locales
+import githubLogo from "../assets/github1.png"; // Importar imágenes locales
+import google from "../assets/google.png"; // Importar imágenes locales
 
 const testimonials = [
   {
@@ -11,7 +11,7 @@ const testimonials = [
       "El profesionalismo y las habilidades organizativas excepcionales hacen que la colaboración sea un placer. El equipo de Serge destaca en cada tarea, superando expectativas. Un verdadero placer trabajar con ellos.",
     author: "Adrián Vaquero",
     position: "CoFounder ThreeLogics",
-    avatar: "src/assets/1.webp",
+    avatar: "src/assets/1.png",
   },
   {
     companyLogo: google,
@@ -20,7 +20,7 @@ const testimonials = [
       "Un equipo increíblemente dedicado y profesional. Su enfoque meticuloso y atención al detalle elevaron nuestro proyecto a otro nivel.",
     author: "Iker Dominguez",
     position: "CoFounder ThreeLogics",
-    avatar: "src/assets/2.webp",
+    avatar: "src/assets/2.png",
   },
   {
     companyLogo: githubLogo,
@@ -29,7 +29,7 @@ const testimonials = [
       "El profesionalismo y las habilidades organizativas excepcionales hacen que la colaboración sea un placer. El equipo de Serge destaca en cada tarea, superando expectativas. Un verdadero placer trabajar con ellos.",
     author: "Daniel Ramiro",
     position: "CoFounder ThreeLogics",
-    avatar: "src/assets/3.webp",
+    avatar: "src/assets/3.png",
   },
 ];
 
