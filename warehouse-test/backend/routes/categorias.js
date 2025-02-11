@@ -1,6 +1,8 @@
 import express from "express";
 import { body, validationResult } from "express-validator";
 import Categoria from "../models/Categoria.js";
+import { verificarToken } from "../middleware/authMiddleware.js";
+import { Op } from "sequelize";
 
 const router = express.Router();
 
@@ -13,15 +15,39 @@ const validarCampos = (req, res, next) => {
   next();
 };
 
-// ✅ Crear categoría con validación
+// ✅ Crear categoría con validación, usuarioId y evitar duplicados
 router.post(
   "/",
-  [body("nombre").notEmpty().withMessage("El nombre es obligatorio").trim()],
+  [
+    verificarToken, // ✅ Asegurar que el usuario está autenticado
+    body("nombre").notEmpty().withMessage("El nombre es obligatorio").trim(),
+  ],
   validarCampos,
   async (req, res) => {
     try {
-      const categoria = await Categoria.create(req.body);
-      res.status(201).json(categoria);
+      const { nombre } = req.body;
+      const usuarioId = req.usuario.id;
+
+      // ❌ Verificar si la categoría ya existe para este usuario
+      const categoriaExistente = await Categoria.findOne({
+        where: { nombre, usuarioId },
+      });
+
+      if (categoriaExistente) {
+        return res.status(400).json({
+          error: "Esta categoría ya existe para este usuario.",
+          notify: true, // ✅ Agregamos esta clave para la notificación en el frontend
+        });
+      }
+
+      // ✅ Crear la nueva categoría
+      const categoria = await Categoria.create({ nombre, usuarioId });
+
+      res.status(201).json({
+        mensaje: `✅ Categoría "${categoria.nombre}" creada con éxito.`,
+        categoria,
+        notify: true, // ✅ Notificación para el frontend
+      });
     } catch (error) {
       console.error("Error al crear la categoría:", error);
       res.status(500).json({ error: "Error interno del servidor" });
@@ -29,15 +55,24 @@ router.post(
   }
 );
 
-// ✅ Permitir que cualquier usuario vea las categorías
-// ✅ Endpoint para obtener todas las categorías
-router.get("/", async (req, res) => {
+// ✅ Endpoint para obtener todas las categorías sin duplicados
+router.get("/", verificarToken, async (req, res) => {
   try {
-    const categorias = await Categoria.findAll();
-    console.log("Categorías enviadas al frontend:", categorias); // 🔍 Debug
+    let categorias;
 
-    if (!categorias || categorias.length === 0) {
-      return res.status(404).json({ error: "No hay categorías disponibles" });
+    if (req.usuario.rol === "admin") {
+      // Admin ve todas las categorías pero sin duplicados
+      const categoriasTodas = await Categoria.findAll();
+
+      // Filtrar categorías duplicadas por nombre
+      categorias = Array.from(
+        new Map(categoriasTodas.map((cat) => [cat.nombre, cat])).values()
+      );
+    } else {
+      // Cliente solo ve sus propias categorías
+      categorias = await Categoria.findAll({
+        where: { usuarioId: req.usuario.id },
+      });
     }
 
     res.json(categorias);

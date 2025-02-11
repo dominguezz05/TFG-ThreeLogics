@@ -1,6 +1,7 @@
 import express from "express";
 import Producto from "../models/Producto.js";
 import Categoria from "../models/Categoria.js";
+import Usuario from "../models/Usuario.js";
 const router = express.Router();
 import { verificarToken } from "../middleware/authMiddleware.js";
 
@@ -40,7 +41,10 @@ router.get("/", verificarToken, async (req, res) => {
     if (req.usuario.rol === "admin") {
       // ✅ Admin ve todos los productos
       productos = await Producto.findAll({
-        include: { model: Categoria, attributes: ["nombre"] },
+        include: [
+          { model: Categoria, attributes: ["nombre"] }, // ✅ Categoría
+          { model: Usuario, attributes: ["nombre"] }, // ✅ Usuario creador
+        ],
       });
     } else {
       // ✅ Cliente solo ve sus productos

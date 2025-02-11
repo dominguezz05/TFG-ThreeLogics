@@ -2,7 +2,8 @@ import { useState, useContext, useEffect } from "react";
 import { api } from "../services/api";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify"; // ✅ Importar toastify 
+import { toast } from "react-toastify"; 
+import { motion } from "framer-motion";
 
 function CrearProducto() {
   const { usuario } = useContext(AuthContext);
@@ -15,155 +16,199 @@ function CrearProducto() {
     cantidad: "",
     categoriaId: "",
   });
-  const [categorias, setCategorias] = useState([]); // Estado para guardar categorías
+  
+  const [categorias, setCategorias] = useState([]); 
+  const [nuevaCategoria, setNuevaCategoria] = useState(""); // Estado para nueva categoría
+  const [creandoCategoria, setCreandoCategoria] = useState(false); // Estado para mostrar input
 
-  // Obtener categorías al cargar la página
+  // Obtener categorías
   useEffect(() => {
-    api
-      .get("/categorias")
-      .then((response) => {
-        console.log("Categorías recibidas:", response.data); // 👀 Verifica en consola
-        setCategorias(response.data);
-      })
+    api.get("/categorias")
+      .then((response) => setCategorias(response.data))
       .catch((error) => console.error("Error al obtener categorías:", error));
   }, []);
-  
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setProducto({
-      ...producto,
-      [name]: name === "categoriaId" ? Number(value) : value, // 🔹 Asegurar que `categoriaId` es un número
-    });
+    setProducto({ ...producto, [name]: name === "categoriaId" ? Number(value) : value });
+
+    if (name === "categoriaId" && value === "crear") {
+      setCreandoCategoria(true);
+      setProducto({ ...producto, categoriaId: "" });
+    } else {
+      setCreandoCategoria(false);
+    }
   };
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const productoConUsuario = { ...producto, usuarioId: usuario?.id || null };
-      const response = await api.post("/productos", productoConUsuario);
 
-      toast.success(`✅ Producto "${response.data.nombre}" añadido con éxito!`); // ✅ Notificación en vez de alert()
+    try {
+      let categoriaIdFinal = producto.categoriaId;
+
+      // 🚀 Crear nueva categoría si el usuario eligió "crear nueva"
+      if (creandoCategoria && nuevaCategoria.trim() !== "") {
+        // Verificar si ya existe la categoría
+        const existeCategoria = categorias.find(c => c.nombre.toLowerCase() === nuevaCategoria.toLowerCase());
+
+        if (existeCategoria) {
+          categoriaIdFinal = existeCategoria.id;
+          toast.info(`ℹ️ La categoría "${nuevaCategoria}" ya existe y será usada.`);
+        } else {
+          const responseCategoria = await api.post("/categorias", { nombre: nuevaCategoria });
+          categoriaIdFinal = responseCategoria.data.id;
+          toast.success(`✅ Categoría "${nuevaCategoria}" creada con éxito!`);
+
+          // Actualizar categorías en el frontend
+          setCategorias([...categorias, responseCategoria.data]);
+        }
+      }
+
+      // Crear producto con la categoría final
+      const response = await api.post("/productos", {
+        ...producto,
+        categoriaId: categoriaIdFinal,
+        usuarioId: usuario?.id || null,
+      });
+
+      toast.success(`✅ Producto "${response.data.nombre}" añadido con éxito!`);
       navigate("/productos");
+
     } catch (error) {
       toast.error(error.response?.data?.error || "❌ Error al añadir producto");
     }
   };
-  
+
 
   return (
-    <div className="p-5 max-w-4xl mx-auto flex gap-5">
-      {/* Formulario */}
-      <div className="w-1/2">
-        <h1 className="text-2xl font-bold mb-4">Añadir Producto</h1>
-        <form onSubmit={handleSubmit} className="grid gap-3">
-          <input
-            type="text"
-            name="nombre"
-            placeholder="Nombre del producto"
-            value={producto.nombre}
-            onChange={handleChange}
-            className="border p-2"
-            required
-          />
-          <input
-            type="text"
-            name="descripcion"
-            placeholder="Descripción"
-            value={producto.descripcion}
-            onChange={handleChange}
-            className="border p-2"
-          />
-          <input
-            type="number"
-            name="precio"
-            placeholder="Precio"
-            value={producto.precio}
-            onChange={handleChange}
-            className="border p-2"
-            required
-          />
-          <input
-            type="number"
-            name="cantidad"
-            placeholder="Cantidad"
-            value={producto.cantidad}
-            onChange={handleChange}
-            className="border p-2"
-            required
-          />
-
-          {/* Select para elegir categoría */}
-          <select
-  name="categoriaId"
-  value={producto.categoriaId}
-  onChange={handleChange}
-  className="border p-2"
-  required
->
-  <option value="">Selecciona una categoría</option>
-  {categorias && categorias.length > 0 ? (
-    categorias.map((categoria) => (
-      <option key={categoria.id} value={categoria.id}>
-        {categoria.nombre}
-      </option>
-    ))
-  ) : (
-    <option disabled>No hay categorías disponibles</option>
-  )}
-</select>
-
-
-          <button
-            type="submit"
-            className="bg-blue-500 text-white px-4 py-2 rounded"
-          >
-            Añadir Producto
-          </button>
-        </form>
-      </div>
-
-      {/* Tabla de Categorías */}
-      <div className="w-1/2">
-        <div className="flex justify-between items-center mb-4">
-          <h1 className="text-2xl font-bold">Categorías Disponibles</h1>
-          <button
-            onClick={() => navigate("/crear-categoria")}
-            className="bg-purple-500 text-white px-4 py-2 rounded"
-          >
-            + Añadir Categoría
-          </button>
-        </div>
-        <table className="w-full border-collapse border border-gray-300">
-          <thead>
-            <tr className="bg-gray-100">
-              <th className="border px-4 py-2">ID</th>
-              <th className="border px-4 py-2">Nombre</th>
-            </tr>
-          </thead>
-          <tbody>
-            {categorias.length > 0 ? (
-              categorias.map((categoria) => (
-                <tr key={categoria.id}>
-                  <td className="border px-4 py-2">{categoria.id}</td>
-                  <td className="border px-4 py-2">{categoria.nombre}</td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td
-                  colSpan="2"
-                  className="border px-4 py-2 text-center text-gray-500"
-                >
-                  No hay categorías disponibles
-                </td>
-              </tr>
+    <div className="w-full min-h-screen bg-black flex justify-center items-center pt-10">
+      <div className="p-8 max-w-5xl w-full bg-gray-900 text-white rounded-lg shadow-2xl flex gap-10">
+        {/* Formulario para añadir productos */}
+        <motion.div
+          initial={{ opacity: 0, x: -50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 1 }}
+          className="w-1/2"
+        >
+          <h1 className="text-3xl font-bold text-teal-400 mb-6">➕ Añadir Producto</h1>
+          <form onSubmit={handleSubmit} className="grid gap-4">
+            <input
+              type="text"
+              name="nombre"
+              placeholder="📌 Nombre del producto"
+              value={producto.nombre}
+              onChange={handleChange}
+              className="border border-gray-700 bg-gray-800 text-white p-3 rounded-lg focus:ring-2 focus:ring-teal-400 focus:outline-none"
+              required
+            />
+            <input
+              type="text"
+              name="descripcion"
+              placeholder="📝 Descripción"
+              value={producto.descripcion}
+              onChange={handleChange}
+              className="border border-gray-700 bg-gray-800 text-white p-3 rounded-lg focus:ring-2 focus:ring-teal-400 focus:outline-none"
+            />
+            <input
+              type="number"
+              name="precio"
+              placeholder="💲 Precio"
+              value={producto.precio}
+              onChange={handleChange}
+              className="border border-gray-700 bg-gray-800 text-white p-3 rounded-lg focus:ring-2 focus:ring-teal-400 focus:outline-none"
+              required
+            />
+            <input
+              type="number"
+              name="cantidad"
+              placeholder="📦 Cantidad"
+              value={producto.cantidad}
+              onChange={handleChange}
+              className="border border-gray-700 bg-gray-800 text-white p-3 rounded-lg focus:ring-2 focus:ring-teal-400 focus:outline-none"
+              required
+            />
+  
+            {/* Selección de Categoría */}
+            <select
+              name="categoriaId"
+              value={producto.categoriaId}
+              onChange={handleChange}
+              className="border border-gray-700 bg-gray-800 text-white p-3 rounded-lg focus:ring-2 focus:ring-teal-400 focus:outline-none cursor-pointer"
+              required={!creandoCategoria}
+            >
+              <option value="">📁 Selecciona una categoría</option>
+              {categorias.map((categoria) => (
+                <option key={categoria.id} value={categoria.id}>
+                  {categoria.nombre}
+                </option>
+              ))}
+              <option value="crear">➕ Crear nueva categoría</option>
+            </select>
+  
+            {/* Input para nueva categoría */}
+            {creandoCategoria && (
+              <input
+                type="text"
+                placeholder="🆕 Nombre de la nueva categoría"
+                value={nuevaCategoria}
+                onChange={(e) => setNuevaCategoria(e.target.value)}
+                className="border border-gray-700 bg-gray-800 text-white p-3 rounded-lg focus:ring-2 focus:ring-teal-400 focus:outline-none"
+                required
+              />
             )}
-          </tbody>
-        </table>
+  
+            <motion.button
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5 }}
+              type="submit"
+              className="relative px-6 py-3 bg-teal-500 text-black font-semibold rounded-lg transition-all cursor-pointer
+                         hover:scale-105 hover:shadow-[0px_0px_20px_rgba(45,212,191,0.8)] hover:bg-teal-600"
+            >
+              ✅ Añadir Producto
+            </motion.button>
+          </form>
+        </motion.div>
+  
+        {/* Tabla de Categorías */}
+        <motion.div
+          initial={{ opacity: 0, x: 50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 1 }}
+          className="w-1/2"
+        >
+          <h1 className="text-3xl font-bold text-teal-400 mb-6">📂 Categorías Disponibles</h1>
+          <div className="overflow-x-auto rounded-lg shadow-md">
+            <table className="w-full border-collapse bg-gray-800 text-white rounded-lg">
+              <thead className="bg-gray-900 text-white">
+                <tr>
+                  <th className="border border-gray-700 px-4 py-2">ID</th>
+                  <th className="border border-gray-700 px-4 py-2">Nombre</th>
+                </tr>
+              </thead>
+              <tbody>
+                {categorias.length > 0 ? (
+                  categorias.map((categoria) => (
+                    <tr key={categoria.id} className="hover:bg-gray-700 transition">
+                      <td className="border border-gray-700 px-4 py-2">{categoria.id}</td>
+                      <td className="border border-gray-700 px-4 py-2">{categoria.nombre}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="2" className="border border-gray-700 px-4 py-2 text-center text-gray-400">
+                      No hay categorías disponibles
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </motion.div>
       </div>
     </div>
   );
+  
 }
 
 export default CrearProducto;
