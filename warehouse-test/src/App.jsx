@@ -15,6 +15,7 @@ import PasarelaPago from "./pages/PasarelaPago";
 import Pedidos from "./pages/Pedidos";
 import CrearPedido from "./pages/CrearPedido";
 import Page404 from "./components/Page404";
+import Perfil from "./components/Perfil";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -39,6 +40,7 @@ function App() {
           path="/register"
           element={usuario ? <Navigate to="/productos" /> : <Register />}
         />
+         <Route path="/perfil" element={<Perfil />} />
         
 
         {/* ✅ Agrupamos rutas privadas dentro de <PrivateRoute> */}
