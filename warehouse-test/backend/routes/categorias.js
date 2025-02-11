@@ -2,7 +2,6 @@ import express from "express";
 import { body, validationResult } from "express-validator";
 import Categoria from "../models/Categoria.js";
 import { verificarToken } from "../middleware/authMiddleware.js";
-import { Op } from "sequelize";
 
 const router = express.Router();
 
@@ -15,11 +14,11 @@ const validarCampos = (req, res, next) => {
   next();
 };
 
-// ✅ Crear categoría con validación, usuarioId y evitar duplicados
+// Crear categoría con validación, usuarioId y evitar duplicados
 router.post(
   "/",
   [
-    verificarToken, // ✅ Asegurar que el usuario está autenticado
+    verificarToken, // Asegurar que el usuario está autenticado
     body("nombre").notEmpty().withMessage("El nombre es obligatorio").trim(),
   ],
   validarCampos,
@@ -28,7 +27,7 @@ router.post(
       const { nombre } = req.body;
       const usuarioId = req.usuario.id;
 
-      // ❌ Verificar si la categoría ya existe para este usuario
+      // Verificar si la categoría ya existe para este usuario
       const categoriaExistente = await Categoria.findOne({
         where: { nombre, usuarioId },
       });
@@ -36,17 +35,15 @@ router.post(
       if (categoriaExistente) {
         return res.status(400).json({
           error: "Esta categoría ya existe para este usuario.",
-          notify: true, // ✅ Agregamos esta clave para la notificación en el frontend
         });
       }
 
-      // ✅ Crear la nueva categoría
+      // Crear la nueva categoría
       const categoria = await Categoria.create({ nombre, usuarioId });
 
       res.status(201).json({
-        mensaje: `✅ Categoría "${categoria.nombre}" creada con éxito.`,
+        mensaje: `Categoría "${categoria.nombre}" creada con éxito.`,
         categoria,
-        notify: true, // ✅ Notificación para el frontend
       });
     } catch (error) {
       console.error("Error al crear la categoría:", error);
@@ -55,19 +52,14 @@ router.post(
   }
 );
 
-// ✅ Endpoint para obtener todas las categorías sin duplicados
+// Obtener todas las categorías sin duplicados
 router.get("/", verificarToken, async (req, res) => {
   try {
     let categorias;
 
     if (req.usuario.rol === "admin") {
-      // Admin ve todas las categorías pero sin duplicados
-      const categoriasTodas = await Categoria.findAll();
-
-      // Filtrar categorías duplicadas por nombre
-      categorias = Array.from(
-        new Map(categoriasTodas.map((cat) => [cat.nombre, cat])).values()
-      );
+      // Admin ve todas las categorías
+      categorias = await Categoria.findAll();
     } else {
       // Cliente solo ve sus propias categorías
       categorias = await Categoria.findAll({
@@ -79,6 +71,33 @@ router.get("/", verificarToken, async (req, res) => {
   } catch (error) {
     console.error("Error al obtener categorías:", error);
     res.status(500).json({ error: error.message });
+  }
+});
+
+// Ruta para actualizar una categoría
+router.put("/:id", verificarToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { nombre } = req.body;
+
+    // Buscar la categoría en la base de datos
+    const categoria = await Categoria.findByPk(id);
+
+    if (!categoria) {
+      return res.status(404).json({ error: "Categoría no encontrada" });
+    }
+
+    // Actualizar el nombre de la categoría
+    categoria.nombre = nombre;
+    await categoria.save(); // Guardamos los cambios en la base de datos
+
+    res.status(200).json({
+      mensaje: `Categoría "${categoria.nombre}" actualizada correctamente`,
+      categoria,
+    });
+  } catch (error) {
+    console.error("Error al actualizar la categoría:", error);
+    res.status(500).json({ error: "Error interno del servidor" });
   }
 });
 
