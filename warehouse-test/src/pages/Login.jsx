@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { motion } from "framer-motion";
 import DOMPurify from "dompurify";
+import SplitText from "../components/SplitText";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -73,14 +74,20 @@ export default function Login() {
         transition={{ duration: 1, ease: "easeOut" }}
         className="bg-gradient-to-b from-gray-900/90 to-black/90 backdrop-blur-lg text-white rounded-lg shadow-2xl max-w-md w-full p-8"
       >
-        <motion.h1
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.2 }}
-          className="text-3xl font-bold mb-6 text-center text-teal-400"
-        >
-          Iniciar Sesión
-        </motion.h1>
+        {/* Título con animación de SplitText */}
+
+        <div className="text-center mb-6">
+          <SplitText
+            text="Inicio Sesión"
+            className="text-3xl font-bold text-teal-400 "
+            delay={100}
+            animationFrom={{ opacity: 0, transform: "translate3d(0,50px,0)" }}
+            animationTo={{ opacity: 1, transform: "translate3d(0,0,0)" }}
+            easing="easeOutCubic"
+            threshold={0.2}
+            rootMargin="-50px"
+          />
+        </div>
 
         <form onSubmit={handleLogin} className="grid space-y-4">
           <motion.input
