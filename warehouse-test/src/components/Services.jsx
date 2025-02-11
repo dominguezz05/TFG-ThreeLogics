@@ -44,10 +44,13 @@ export default function Services() {
 
           {/* Íconos representando tecnologías */}
           <div className="flex space-x-6 mt-6">
-            <span className="bg-gray-800 p-3 rounded-full text-2xl">🎨</span>
-            <span className="bg-gray-800 p-3 rounded-full text-2xl">📐</span>
-            <span className="bg-gray-800 p-3 rounded-full text-2xl">⚡</span>
-          </div>
+  <img src="src/assets/paleta.webp" alt="Diseño UI" className="w-14 h-14 rounded-full" />
+  <img src="src/assets/triangulo.webp" alt="Precisión" className="w-14 h-14 rounded-full" />
+  <img src="src/assets/rayo.webp" alt="Velocidad" className="w-14 h-14 rounded-full" />
+</div>
+
+
+
         </motion.div>
 
         {/* Mockup a la derecha */}
