@@ -49,10 +49,11 @@ export default function WebDevelopment() {
               className="w-8 h-8 transition duration-300 hover:scale-110 hover:text-teal-400"
             />
             <img
-              src="./next-js.svg"
-              alt="Next.js"
-              className="w-8 h-8 transition duration-300 hover:scale-110 hover:text-teal-400 bg-white"
-            />
+  src="./next-js.svg"
+  alt="Next.js"
+  className="w-8 h-8 rounded-full transition duration-300 hover:scale-110 hover:text-teal-400 bg-white"
+ />
+
           </div>
         </motion.div>
       </div>
