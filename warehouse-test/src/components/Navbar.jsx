@@ -9,6 +9,8 @@ export default function Navbar() {
   const [lastScrollY, setLastScrollY] = useState(0);
   const [isMenuOpen, setIsMenuOpen] = useState(false); // Estado del menú móvil
   const location = useLocation();
+  // Estado para controlar la apertura del modal
+const [isModalOpen, setIsModalOpen] = useState(false)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -48,7 +50,7 @@ export default function Navbar() {
           <span className="text-2xl font-bold text-teal-400">ThreeLogics</span>
         </button>
       </div>
-
+  
       {/* Menú en escritorio (oculto en móviles) */}
       <div className="hidden md:flex items-center space-x-6 text-gray-300">
         {!usuario ? (
@@ -77,15 +79,43 @@ export default function Navbar() {
           </>
         )}
       </div>
-
-      {/* Botones de autenticación en escritorio */}
-      <div className="hidden md:flex space-x-4 items-center">
+  
+      {/* Botones de autenticación en escritorio con modal */}
+      <div className="hidden md:flex space-x-4 items-center relative">
         {usuario ? (
           <>
-            <span className="text-sm">👤 {usuario?.nombre || "Usuario"}</span>
-            <button onClick={logout} className="bg-red-500 hover:bg-red-700 cursor-pointer text-white px-3 py-1 rounded transition">
-              Cerrar sesión
+            <button 
+              onClick={() => setIsModalOpen(!isModalOpen)} 
+              className="text-sm flex items-center space-x-2 hover:text-teal-400 transition cursor-pointer"
+            >
+              <span>👤 {usuario?.nombre || "Usuario"}</span>
             </button>
+  
+            {/* Modal en la esquina superior derecha */}
+            {isModalOpen && (
+              <div className="absolute top-14 right-4 bg-gray-900 p-4 rounded-lg shadow-lg w-64 transition-opacity">
+                <h2 className="text-white text-lg font-bold">Perfil</h2>
+                <p className="text-gray-300 text-sm"><strong>Nombre:</strong> {usuario?.nombre || "Usuario"}</p>
+                <p className="text-gray-300 text-sm"><strong>Email:</strong> {usuario?.email || "email@example.com"}</p>
+  
+                <div className="mt-3 flex flex-col space-y-2">
+                  <Link 
+                    to="/perfil" 
+                    className="w-full text-center bg-teal-500 text-black py-2 rounded-lg hover:bg-teal-400 transition"
+                    onClick={() => setIsModalOpen(false)}
+                  >
+                    Editar Perfil
+                  </Link>
+  
+                  <button 
+                    onClick={logout} 
+                    className="w-full bg-red-500 text-white py-2 rounded-lg hover:bg-red-700 transition"
+                  >
+                    Cerrar sesión
+                  </button>
+                </div>
+              </div>
+            )}
           </>
         ) : (
           <>
@@ -98,12 +128,12 @@ export default function Navbar() {
           </>
         )}
       </div>
-
+  
       {/* Menú hamburguesa para móviles */}
       <button className="md:hidden text-white" onClick={() => setIsMenuOpen(!isMenuOpen)}>
         {isMenuOpen ? <X size={30} /> : <Menu size={30} />}
       </button>
-
+  
       {/* Menú móvil desplegable */}
       {isMenuOpen && (
         <div className="absolute top-full left-0 w-full bg-black text-white py-6 flex flex-col items-center space-y-4 shadow-lg md:hidden">
@@ -131,27 +161,46 @@ export default function Navbar() {
               <Link to="/dashboard" className="hover:text-teal-400 transition">Dashboard</Link>
             </>
           )}
-
-          {/* Botones de autenticación en móvil */}
-          {usuario ? (
+  
+          {/* Botones de autenticación en móvil con modal */}
+          {usuario && (
             <>
-              <span className="text-sm">👤 {usuario?.nombre || "Usuario"}</span>
-              <button onClick={logout} className="bg-red-500 hover:bg-red-700 cursor-pointer text-white px-3 py-1 rounded transition">
-                Cerrar sesión
+              <button 
+                onClick={() => setIsModalOpen(!isModalOpen)} 
+                className="text-sm flex items-center space-x-2 hover:text-teal-400 transition"
+              >
+                <span>👤 {usuario?.nombre || "Usuario"}</span>
               </button>
-            </>
-          ) : (
-            <>
-              <Link to="/login" className="px-4 py-2 bg-teal-500 rounded-lg text-black hover:bg-teal-400 transition">
-                Iniciar sesión
-              </Link>
-              <Link to="/register" className="px-4 py-2 border border-teal-500 rounded-lg text-teal-500 hover:bg-teal-500 hover:text-black transition">
-                Registrarse
-              </Link>
+  
+              {/* Modal en móvil */}
+              {isModalOpen && (
+                <div className="bg-gray-900 p-4 rounded-lg shadow-lg w-64 transition-opacity mt-2">
+                  <p className="text-gray-300 text-sm"><strong>Nombre:</strong> {usuario?.nombre || "Usuario"}</p>
+                  <p className="text-gray-300 text-sm"><strong>Email:</strong> {usuario?.email || "email@example.com"}</p>
+  
+                  <div className="mt-3 flex flex-col space-y-2">
+                    <Link 
+                      to="/perfil" 
+                      className="w-full text-center bg-teal-500 text-black py-2 rounded-lg hover:bg-teal-400 transition"
+                      onClick={() => setIsModalOpen(false)}
+                    >
+                      Editar Perfil
+                    </Link>
+  
+                    <button 
+                      onClick={logout} 
+                      className="w-full bg-red-500 text-white py-2 rounded-lg hover:bg-red-700 transition"
+                    >
+                      Cerrar sesión
+                    </button>
+                  </div>
+                </div>
+              )}
             </>
           )}
         </div>
       )}
     </nav>
   );
+  
 }
