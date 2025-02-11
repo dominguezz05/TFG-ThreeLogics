@@ -1,21 +1,20 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useRef } from "react";
 import { api } from "../services/api";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { motion } from "framer-motion";
+import DOMPurify from "dompurify";
 
 export default function Login() {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const passwordRef = useRef(null);
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   const sanitizeInput = (input) => {
-    const parser = new DOMParser();
-    const sanitizedString =
-      parser.parseFromString(input, "text/html").body.textContent || "";
-    return sanitizedString.trim();
+    return DOMPurify.sanitize(input.trim());
   };
 
   const validateEmail = (email) => {
@@ -29,19 +28,22 @@ export default function Login() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     const sanitizedEmail = sanitizeInput(email.trim());
-    const sanitizedPassword = sanitizeInput(password.trim());
+    const sanitizedPassword = sanitizeInput(passwordRef.current.value.trim());
 
     if (!validateEmail(sanitizedEmail)) {
       toast.error(
         "Correo electrónico inválido. Asegúrate de que tenga un formato correcto (ej: usuario@dominio.com)."
       );
+      setLoading(false);
       return;
     }
 
     if (!validatePassword(sanitizedPassword)) {
       toast.error("La contraseña debe tener al menos 8 caracteres.");
+      setLoading(false);
       return;
     }
 
@@ -51,18 +53,20 @@ export default function Login() {
         password: sanitizedPassword,
       });
       login(response.data);
-      toast.success(`✅ Login Succesful`);
+      toast.success("Inicio de sesión exitoso.");
       navigate("/productos");
     } catch (error) {
       toast.error(
-        error.response?.data?.error || "❌ Error en el inicio de sesión"
+        "Credenciales incorrectas. Por favor, inténtalo de nuevo: " +
+          error.message
       );
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="h-screen w-screen flex justify-center items-center bg-black">
-      {/* Contenedor con animación */}
       <motion.div
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
@@ -97,22 +101,25 @@ export default function Login() {
             transition={{ duration: 0.8, delay: 0.4 }}
             type="password"
             placeholder="Contraseña"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            ref={passwordRef}
             className="border border-gray-700 bg-gray-800 text-white p-3 rounded-lg focus:ring-2 focus:ring-teal-400 focus:outline-none"
             required
           />
 
-          {/* Botón con efecto hover dinámico */}
           <motion.button
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.5 }}
             type="submit"
-            className="relative px-6 py-3 bg-teal-500 text-black font-semibold rounded-lg transition-all cursor-pointer
-                     hover:scale-105 hover:shadow-[0px_0px_20px_rgba(45,212,191,0.8)] hover:bg-teal-600"
+            disabled={loading}
+            className={`relative px-6 py-3 bg-teal-500 text-black font-semibold rounded-lg transition-all cursor-pointer
+                        ${
+                          loading
+                            ? "opacity-50 cursor-not-allowed"
+                            : "hover:scale-105 hover:shadow-[0px_0px_20px_rgba(45,212,191,0.8)] hover:bg-teal-600"
+                        }`}
           >
-            Ingresar
+            {loading ? "Cargando..." : "Ingresar"}
           </motion.button>
         </form>
       </motion.div>
