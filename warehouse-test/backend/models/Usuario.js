@@ -30,6 +30,10 @@ const Usuario = sequelize.define("Usuario", {
     allowNull: false,
     defaultValue: DataTypes.NOW,
   },
+  imagenPerfil: {
+    type: DataTypes.BLOB("medium"), // ✅ Esto almacena hasta 16 MB de datos binarios
+    allowNull: true,
+  },
 });
 
 export default Usuario;
