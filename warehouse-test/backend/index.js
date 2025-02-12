@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import { dirname } from "path";
 // Importar base de datos
 import sequelize from "./config/database.js";
+import usuarioRoutes from "./routes/usuarios.js";
 
 //Comentario para Prueba GITHUB
 
@@ -44,6 +45,7 @@ app.use("/api/movimientos", movimientosRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/pedidos", pedidosRoutes);
+app.use("/api/usuarios", usuarioRoutes);
 
 app.get("/", (req, res) => {
   res.send("Servidor funcionando correctamente");
