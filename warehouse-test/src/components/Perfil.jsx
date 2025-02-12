@@ -1,5 +1,5 @@
 import { useState, useContext, useEffect } from "react";
-import { api } from "../services/api"; 
+import { api } from "../services/api";
 import { AuthContext } from "../context/AuthContext";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -45,29 +45,30 @@ export default function Perfil() {
     }
   }, [usuario]);
 
-// Manejar la subida de imágenes y previsualización
-const handleImagenChange = (e) => {
-  const file = e.target.files[0];
-  const MAX_SIZE_MB = 16; // Tamaño máximo permitido en MB
+  // Manejar la subida de imágenes y previsualización
+  const handleImagenChange = (e) => {
+    const file = e.target.files[0];
+    const MAX_SIZE_MB = 16; // Tamaño máximo permitido en MB
 
-  if (file) {
-    // Verificar que el archivo sea una imagen
-    if (!file.type.startsWith("image/")) {
-      toast.error("❌ El archivo debe ser una imagen.");
-      return;
+    if (file) {
+      // Verificar que el archivo sea una imagen
+      if (!file.type.startsWith("image/")) {
+        toast.error("❌ El archivo debe ser una imagen.");
+        return;
+      }
+
+      // Verificar que el tamaño no exceda 16MB
+      if (file.size > MAX_SIZE_MB * 1024 * 1024) {
+        toast.error(
+          `❌ La imagen es demasiado grande. Máximo permitido: ${MAX_SIZE_MB}MB.`
+        );
+        return;
+      }
+
+      setImagenPreview(URL.createObjectURL(file)); // Mostrar imagen antes de subirla
+      setImagenPerfil(file); // Guardar el archivo en el estado
     }
-
-    // Verificar que el tamaño no exceda 16MB
-    if (file.size > MAX_SIZE_MB * 1024 * 1024) {
-      toast.error(`❌ La imagen es demasiado grande. Máximo permitido: ${MAX_SIZE_MB}MB.`);
-      return;
-    }
-
-    setImagenPreview(URL.createObjectURL(file)); // Mostrar imagen antes de subirla
-    setImagenPerfil(file); // Guardar el archivo en el estado
-  }
-};
-
+  };
 
   // Validar contraseña en tiempo real
   const validarPassword = (password) => {
@@ -106,7 +107,8 @@ const handleImagenChange = (e) => {
 
   // Validar si el formulario es válido
   const validarFormulario = (password, confirmPassword) => {
-    const isValid = password && !validarPassword(password) && password === confirmPassword;
+    const isValid =
+      password && !validarPassword(password) && password === confirmPassword;
     setIsFormValid(isValid);
   };
 
@@ -129,17 +131,20 @@ const handleImagenChange = (e) => {
         formData.append("imagenPerfil", imagenPerfil);
       }
 
-      console.log("🔍 Enviando FormData:", Object.fromEntries(formData.entries()));
+      console.log(
+        "🔍 Enviando FormData:",
+        Object.fromEntries(formData.entries())
+      );
 
       const response = await api.put("/usuarios/perfil", formData, {
-        headers: { "Content-Type": "multipart/form-data" }
+        headers: { "Content-Type": "multipart/form-data" },
       });
 
-      const updatedUser = { 
-        ...usuario, 
-        nombre: user.nombre, 
+      const updatedUser = {
+        ...usuario,
+        nombre: user.nombre,
         email: user.email,
-        imagenPerfil: response.data.usuario.imagenPerfil
+        imagenPerfil: response.data.usuario.imagenPerfil,
       };
       setUsuario(updatedUser);
       localStorage.setItem("usuario", JSON.stringify(updatedUser));
@@ -151,7 +156,9 @@ const handleImagenChange = (e) => {
       }, 1500);
     } catch (error) {
       console.error("❌ Error al actualizar perfil:", error);
-      toast.error(error.response?.data?.error || "❌ No se pudo actualizar el perfil");
+      toast.error(
+        error.response?.data?.error || "❌ No se pudo actualizar el perfil"
+      );
     }
   };
 
@@ -159,34 +166,43 @@ const handleImagenChange = (e) => {
     <div className="h-screen flex items-center justify-center bg-black text-white">
       <div className="bg-gray-900 p-8 rounded-lg shadow-lg w-96 text-center relative">
         {/* Botón para volver atrás */}
-        <button 
-          onClick={() => navigate(-1)} 
-          className="absolute top-4 left-4 text-gray-400 hover:text-white flex items-center cursor-pointer"
+        <button
+          onClick={() => navigate(-1)}
+          className="absolute top-4 left-4 text-white hover:text-white flex items-center cursor-pointer"
         >
           <ArrowLeft size={20} className="mr-2" /> Volver
         </button>
         <h2 className="text-2xl font-bold mb-4">Editar Perfil</h2>
         {/* Imagen de perfil */}
         <div className="mb-4">
-          <label className="block text-gray-400">Imagen de Perfil</label>
-          <div className="flex justify-center">
-            <img 
-              src={imagenPreview || imagenPerfil || "https://via.placeholder.com/100"} 
-              alt="Perfil" 
+          <label className="block text-gray-400 mt-4">Imagen de Perfil</label>
+          <div className="flex justify-center mt-4">
+            <img
+              src={
+                imagenPreview ||
+                imagenPerfil ||
+                "https://via.placeholder.com/100"
+              }
+              alt="Perfil"
               className="w-24 h-24 rounded-full object-cover border-2 border-gray-500"
             />
           </div>
-          <input type="file" accept="image/*" onChange={handleImagenChange} className="mt-2 text-gray-300" />
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImagenChange}
+            className="mt-4 text-gray-300 cursor-pointer"
+          />
         </div>
-     
+
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="text-left">
-            <label className="text-gray-400 block">Nombre</label>
-            <input 
-              type="text" 
-              name="nombre" 
-              value={user.nombre} 
-              onChange={(e) => setUser({ ...user, nombre: e.target.value })} 
+            <label className="text-gray-400 block mt-4">Nombre</label>
+            <input
+              type="text"
+              name="nombre"
+              value={user.nombre}
+              onChange={(e) => setUser({ ...user, nombre: e.target.value })}
               className="w-full p-2 mt-1 rounded bg-gray-800 text-white"
               required
             />
@@ -194,11 +210,11 @@ const handleImagenChange = (e) => {
 
           <div className="text-left">
             <label className="text-gray-400 block">Email</label>
-            <input 
-              type="email" 
-              name="email" 
-              value={user.email} 
-              onChange={(e) => setUser({ ...user, email: e.target.value })} 
+            <input
+              type="email"
+              name="email"
+              value={user.email}
+              onChange={(e) => setUser({ ...user, email: e.target.value })}
               className="w-full p-2 mt-1 rounded bg-gray-800 text-white"
               required
             />
@@ -206,25 +222,45 @@ const handleImagenChange = (e) => {
 
           {/* Indicador de seguridad de contraseña */}
           <div className="text-left relative">
-            <label className="text-gray-400 block">Nueva Contraseña (opcional)</label>
-            <input 
+            <label className="text-gray-400 block">
+              Nueva Contraseña (opcional)
+            </label>
+            <input
               type={showNewPassword ? "text" : "password"}
               placeholder="Mínimo 8 caracteres, 1 mayúscula y 1 símbolo"
               value={nuevoPassword}
               onChange={handlePasswordChange}
               className="w-full p-2 mt-1 rounded bg-gray-800 text-white pr-10"
             />
-            <button type="button" onClick={() => setShowNewPassword(!showNewPassword)} className="absolute right-3 top-9 text-gray-400 hover:text-gray-200">
+            <button
+              type="button"
+              onClick={() => setShowNewPassword(!showNewPassword)}
+              className="absolute right-3 top-9 text-gray-400 hover:text-gray-200"
+            >
               {showNewPassword ? <EyeOff size={20} /> : <Eye size={20} />}
             </button>
-            {passwordError && <p className="text-red-400 text-sm mt-1">{passwordError}</p>}
-            <div className={`h-2 mt-1 rounded-full transition ${["bg-red-500", "bg-orange-400", "bg-yellow-300", "bg-green-400", "bg-green-600"][passwordStrength]}`} />
+            {passwordError && (
+              <p className="text-red-400 text-sm mt-1">{passwordError}</p>
+            )}
+            <div
+              className={`h-2 mt-1 rounded-full transition ${
+                [
+                  "bg-red-500",
+                  "bg-orange-400",
+                  "bg-yellow-300",
+                  "bg-green-400",
+                  "bg-green-600",
+                ][passwordStrength]
+              }`}
+            />
           </div>
 
           {/* Confirmación de contraseña */}
           <div className="text-left relative">
-            <label className="text-gray-400 block">Confirmar Nueva Contraseña</label>
-            <input 
+            <label className="text-gray-400 block">
+              Confirmar Nueva Contraseña
+            </label>
+            <input
               type={showConfirmPassword ? "text" : "password"}
               placeholder="Repite la nueva contraseña"
               value={confirmarPassword}
@@ -234,7 +270,10 @@ const handleImagenChange = (e) => {
             />
           </div>
 
-          <button type="submit" className="w-full bg-teal-500 text-black py-2 rounded-lg hover:bg-teal-400 transition disabled:opacity-50" >
+          <button
+            type="submit"
+            className="w-full bg-teal-500 text-black py-2 rounded-lg hover:bg-teal-400 transition disabled:opacity-50 mt-4"
+          >
             Guardar Cambios
           </button>
         </form>
