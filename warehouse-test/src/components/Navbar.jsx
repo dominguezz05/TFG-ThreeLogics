@@ -33,6 +33,9 @@
       }
       setIsMenuOpen(false); // Cierra el menú en móvil después de hacer scroll
     };
+    const imagenPerfil = usuario?.imagenPerfil
+    ? `data:image/png;base64,${usuario.imagenPerfil}`
+    : "/default-avatar.png"; // Ruta a la imagen predeterminada
 
     return (
       <nav
@@ -80,30 +83,23 @@
           )}
         </div>
     
-        {/* Botones de autenticación en escritorio con modal */}
-        <div className="hidden md:flex space-x-4 items-center relative">
-  {usuario ? (
-    <>
-      {/* Deshabilitar botón de usuario cuando estás en "/perfil" */}
-      {window.location.pathname === "/perfil" ? (
-        <span className="text-sm flex items-center space-x-2 text-gray-500 cursor-not-allowed">
-          👤 {usuario?.nombre || "Usuario"}
-        </span>
-      ) : (
-        <button 
-          onClick={() => setIsModalOpen(!isModalOpen)} 
-          className="text-sm flex items-center space-x-2 hover:text-teal-400 transition cursor-pointer"
-        >
-          <span>👤 {usuario?.nombre || "Usuario"}</span>
-        </button>
-      )}
+  {/* Botones de autenticación con imagen de usuario */}
+  <div className="hidden md:flex space-x-4 items-center relative">
+        {usuario ? (
+          <>
+            {/* Imagen de usuario + Nombre */}
+            <button 
+              onClick={() => setIsModalOpen(!isModalOpen)} 
+              className="text-sm flex items-center space-x-2 hover:text-teal-400 transition cursor-pointer"
+            >
+              <img src={imagenPerfil} alt="Perfil" className="w-8 h-8 rounded-full border-2 border-teal-500" />
+              <span>{usuario?.nombre || "Usuario"}</span>
+            </button>
 
       {/* Modal en la esquina superior derecha */}
       {isModalOpen && window.location.pathname !== "/perfil" && (
         <div className="absolute top-14 right-4 bg-gray-900 p-4 rounded-lg shadow-lg w-64 transition-opacity">
-          <h2 className="text-white text-lg font-bold">Perfil</h2>
-          <p className="text-gray-300 text-sm"><strong>Nombre:</strong> {usuario?.nombre || "Usuario"}</p>
-          <p className="text-gray-300 text-sm"><strong>Email:</strong> {usuario?.email || "email@example.com"}</p>
+        
 
           <div className="mt-3 flex flex-col space-y-2">
             <Link 
@@ -169,21 +165,26 @@
               </>
             )}
     
-            {/* Botones de autenticación en móvil con modal */}
-            {usuario && (
-              <>
-                <button 
-                  onClick={() => setIsModalOpen(!isModalOpen)} 
-                  className="text-sm flex items-center space-x-2 hover:text-teal-400 transition"
-                >
-                  <span>👤 {usuario?.nombre || "Usuario"}</span>
-                </button>
+          {/* Botones de autenticación en móvil con modal */}
+{usuario && (
+  <>
+    <button 
+      onClick={() => setIsModalOpen(!isModalOpen)} 
+      className="text-sm flex items-center space-x-2 hover:text-teal-400 transition"
+    >
+      <img 
+        src={imagenPerfil} 
+        alt="Perfil" 
+        className="w-8 h-8 rounded-full border-2 border-teal-500"
+      />
+      <span>{usuario?.nombre || "Usuario"}</span>
+    </button>
+
     
                 {/* Modal en móvil */}
                 {isModalOpen && (
                   <div className="bg-gray-900 p-4 rounded-lg shadow-lg w-64 transition-opacity mt-2">
-                    <p className="text-gray-300 text-sm"><strong>Nombre:</strong> {usuario?.nombre || "Usuario"}</p>
-                    <p className="text-gray-300 text-sm"><strong>Email:</strong> {usuario?.email || "email@example.com"}</p>
+                   
     
                     <div className="mt-3 flex flex-col space-y-2">
                       <Link 
