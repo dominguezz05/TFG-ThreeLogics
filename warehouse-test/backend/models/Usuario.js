@@ -25,6 +25,11 @@ const Usuario = sequelize.define("Usuario", {
     allowNull: false,
     defaultValue: "usuario", // ✅ Si no se envía, por defecto será "usuario"
   },
+  lastPasswordChange: {
+    type: DataTypes.DATE, // ✅ Guardar fecha del último cambio de contraseña
+    allowNull: false,
+    defaultValue: DataTypes.NOW,
+  },
 });
 
 export default Usuario;

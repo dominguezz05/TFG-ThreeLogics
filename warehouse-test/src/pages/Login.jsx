@@ -6,11 +6,13 @@ import { toast } from "react-toastify";
 import { motion } from "framer-motion";
 import DOMPurify from "dompurify";
 import SplitText from "../components/SplitText";
+import { Eye, EyeOff } from "lucide-react"; // Iconos de ojo
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const passwordRef = useRef(null);
   const { login } = useContext(AuthContext);
+  const [showPassword, setShowPassword] = useState(false); // Estado para mostrar/ocultar contraseña
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
@@ -101,17 +103,25 @@ export default function Login() {
             className="border border-gray-700 bg-gray-800 text-white p-3 rounded-lg focus:ring-2 focus:ring-teal-400 focus:outline-none"
             required
           />
-
-          <motion.input
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            type="password"
-            placeholder="Contraseña"
-            ref={passwordRef}
-            className="border border-gray-700 bg-gray-800 text-white p-3 rounded-lg focus:ring-2 focus:ring-teal-400 focus:outline-none"
-            required
-          />
+<motion.div className="relative">
+  <motion.input
+    initial={{ opacity: 0, x: -20 }}
+    animate={{ opacity: 1, x: 0 }}
+    transition={{ duration: 0.8, delay: 0.4 }}
+    type={showPassword ? "text" : "password"} // Alterna entre mostrar y ocultar
+    placeholder="Contraseña"
+    ref={passwordRef}
+    className="border border-gray-700 bg-gray-800 text-white p-3 rounded-lg w-full pr-10 focus:ring-2 focus:ring-teal-400 focus:outline-none"
+    required
+  />
+  <button
+    type="button"
+    onClick={() => setShowPassword(!showPassword)}
+    className="absolute right-3 top-3 text-gray-400 hover:text-white"
+  >
+    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+  </button>
+</motion.div>
 
           <motion.button
             initial={{ opacity: 0, scale: 0.9 }}
