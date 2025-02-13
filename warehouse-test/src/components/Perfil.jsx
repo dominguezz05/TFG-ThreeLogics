@@ -181,7 +181,7 @@ export default function Perfil() {
               src={
                 imagenPreview ||
                 imagenPerfil ||
-                "https://via.placeholder.com/100"
+                "src/assets/avatar.png"
               }
               alt="Perfil"
               className="w-24 h-24 rounded-full object-cover border-2 border-gray-500"
