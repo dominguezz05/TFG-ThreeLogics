@@ -11,15 +11,23 @@ export default function Navbar() {
   const location = useLocation();
   // Estado para controlar la apertura del modal
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [imagenPerfil, setImagenPerfil] = useState("src/assets/avatar.png"); // Imagen por defecto
-
+  const [imagenPerfil, setImagenPerfil] = useState(() => {
+    // Intenta cargar desde localStorage en la primera renderización
+    const storedUser = localStorage.getItem("usuario");
+    if (storedUser) {
+      const parsedUser = JSON.parse(storedUser);
+      return parsedUser.imagenPerfil || "src/assets/avatar.png";
+    }
+    return "src/assets/avatar.png"; // Imagen por defecto
+  });
+  
   useEffect(() => {
     if (usuario?.imagenPerfil) {
       setImagenPerfil(usuario.imagenPerfil.startsWith("http") 
         ? usuario.imagenPerfil 
         : `data:image/png;base64,${usuario.imagenPerfil}`);
     }
-  }, [usuario]); // Se actualiza cuando cambia el usuario
+  }, [usuario]);
   
   useEffect(() => {
     const handleScroll = () => {
