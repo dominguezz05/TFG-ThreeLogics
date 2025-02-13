@@ -205,13 +205,13 @@ export default function Productos() {
                     <td className="border px-4 py-2 flex gap-2 justify-center">
                       <button
                         onClick={() => abrirModalEdicion(producto)}
-                        className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded"
+                        className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded cursor-pointer"
                       >
                         ✏️ Editar
                       </button>
                       <button
                         onClick={() => eliminarProducto(producto.id)}
-                        className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
+                        className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded cursor-pointer"
                       >
                         🗑️ Eliminar
                       </button>
