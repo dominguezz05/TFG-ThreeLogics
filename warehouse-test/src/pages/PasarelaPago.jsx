@@ -19,24 +19,42 @@ export default function PasarelaPago() {
   const cardHolderName = user?.name || "Usuario Desconocido";
 
   // Datos correctos que deben coincidir
-  const validCardNumber = "4000123456789010";
+  const validCardNumber = "4000-1234-5678-9010";
   const validExpiryDate = "12/25";
   const validCvv = "123";
+
   if (!pedidoId) {
     console.error("❌ ID del pedido no es válido.");
-    return;
+    return <p className="text-center text-red-500">Pedido no válido.</p>;
   }
-  
+
+  // 📌 Formatear número de tarjeta (####-####-####-####)
+  const handleCardNumberChange = (e) => {
+    let value = e.target.value.replace(/\D/g, ""); // Solo números
+    value = value.replace(/(\d{4})/g, "$1-").trim(); // Agrega guion cada 4 números
+    value = value.slice(0, 19); // Limita a 19 caracteres (16 números + 3 guiones)
+    setCardNumber(value);
+  };
+
+  // 📌 Formatear fecha de expiración (MM/YY)
+  const handleExpiryDateChange = (e) => {
+    let value = e.target.value.replace(/\D/g, ""); // Solo números
+    if (value.length > 2) {
+      value = value.slice(0, 2) + "/" + value.slice(2, 4); // Agrega '/' después de los primeros 2 dígitos
+    }
+    value = value.slice(0, 5); // Limita a 5 caracteres (MM/YY)
+    setExpiryDate(value);
+  };
 
   const procesarPago = async () => {
     if (cardNumber !== validCardNumber || expiryDate !== validExpiryDate || cvv !== validCvv) {
       toast.error("❌ Error: Los datos de la tarjeta son incorrectos.");
       return;
     }
-  
+
     setProcesando(true);
     toast.info("💳 Procesando pago...");
-  
+
     setTimeout(async () => {
       try {
         const response = await api.get(`/pedidos/${pedidoId}`);
@@ -45,7 +63,7 @@ export default function PasarelaPago() {
           setProcesando(false);
           return;
         }
-  
+
         await api.put(`/pedidos/${pedidoId}/estado`, { estado: "enviado" });
         toast.success("✅ Pago realizado con éxito. Pedido enviado.");
         navigate("/pedidos");
@@ -57,8 +75,6 @@ export default function PasarelaPago() {
       }
     }, 3000);
   };
-  
-  
 
   return (
     <div className="w-full min-h-screen bg-black flex justify-center items-center pt-10">
@@ -98,7 +114,7 @@ export default function PasarelaPago() {
           >
             <div className="flex justify-between items-center">
               <h2 className="text-lg font-semibold text-white">Visa</h2>
-              <img src="/chip.png" alt="Chip" className="w-8 h-6 opacity-75" />
+              <img src="./visa.webp" alt="Chip" className="w-8 h-6 opacity-75" />
             </div>
             <p className="text-lg font-mono tracking-widest text-white mt-2">
               4000 1234 5678 9010
@@ -115,75 +131,56 @@ export default function PasarelaPago() {
               </p>
             </div>
           </div>
-
-          {/* Lado trasero */}
-          <div
-            className="absolute w-full h-full bg-gray-900 p-5 rounded-lg shadow-lg flex flex-col justify-end"
-            style={{
-              backfaceVisibility: "hidden",
-              transform: "rotateY(180deg)",
-            }}
-          >
-            <div className="bg-gray-700 h-6 w-full mb-3"></div>
-            <p className="text-center text-white text-lg font-bold tracking-widest">
-              CVV: 123
-            </p>
-          </div>
         </motion.div>
 
         {/* 📌 Formulario de pago */}
         <form className="grid gap-4 mt-6">
-  <input
-    type="text"
-    placeholder="👤 Nombre del titular"
-    className="border border-gray-700 bg-gray-800 text-white p-3 rounded-lg focus:ring-2 focus:ring-teal-400 focus:outline-none"
-    value={cardHolderName}
-    readOnly
-  />
-  <input
-    type="text"
-    placeholder="💳 Número de tarjeta"
-    className="border border-gray-700 bg-gray-800 text-white p-3 rounded-lg focus:ring-2 focus:ring-teal-400 focus:outline-none"
-    value={cardNumber}
-    onChange={(e) => setCardNumber(e.target.value)}
-   
-    title="Debe ser un número de tarjeta válido de 16 dígitos"
-    required
-  />
-  <div className="flex gap-3">
-    <input
-      type="text"
-      placeholder="📅 Expiración (MM/YY)"
-      className="border border-gray-700 bg-gray-800 text-white p-3 rounded-lg w-1/2 focus:ring-2 focus:ring-teal-400 focus:outline-none"
-      value={expiryDate}
-      onChange={(e) => setExpiryDate(e.target.value)}
- 
-      title="Ingrese una fecha en formato MM/YY"
-      required
-    />
-    <input
-      type="text"
-      placeholder="🔐 CVV"
-      className="border border-gray-700 bg-gray-800 text-white p-3 rounded-lg w-1/2 focus:ring-2 focus:ring-teal-400 focus:outline-none"
-      value={cvv}
-      onChange={(e) => setCvv(e.target.value)}
-    
-      title="Debe ser un CVV válido de 3 dígitos"
-      required
-    />
-  </div>
-</form>
+          <input
+            type="text"
+            placeholder="👤 Nombre del titular"
+            className="border border-gray-700 bg-gray-800 text-white p-3 rounded-lg focus:ring-2 focus:ring-teal-400 focus:outline-none"
+            value={cardHolderName}
+            readOnly
+          />
+
+          <input
+            type="text"
+            placeholder="💳 Número de tarjeta"
+            className="border border-gray-700 bg-gray-800 text-white p-3 rounded-lg focus:ring-2 focus:ring-teal-400 focus:outline-none"
+            value={cardNumber}
+            onChange={handleCardNumberChange}
+            maxLength={19}
+            required
+          />
+
+          <div className="flex gap-3">
+            <input
+              type="text"
+              placeholder="📅 Expiración (MM/YY)"
+              className="border border-gray-700 bg-gray-800 text-white p-3 rounded-lg w-1/2 focus:ring-2 focus:ring-teal-400 focus:outline-none"
+              value={expiryDate}
+              onChange={handleExpiryDateChange}
+              maxLength={5}
+              required
+            />
+
+            <input
+              type="text"
+              placeholder="🔐 CVV"
+              className="border border-gray-700 bg-gray-800 text-white p-3 rounded-lg w-1/2 focus:ring-2 focus:ring-teal-400 focus:outline-none"
+              value={cvv}
+              onChange={(e) => setCvv(e.target.value.replace(/\D/g, "").slice(0, 3))}
+              maxLength={3}
+              required
+            />
+          </div>
+        </form>
 
         {/* 🔥 Botón de Confirmar Pago */}
         <motion.button
           whileHover={{ scale: 1.05 }}
           onClick={procesarPago}
-          className={`mt-5 w-full px-6 py-3 text-black font-semibold rounded-lg transition-all cursor-pointer
-                      ${
-                        procesando
-                          ? "bg-gray-500"
-                          : "bg-green-500 hover:bg-green-600 hover:shadow-[0px_0px_20px_rgba(45,212,191,0.8)]"
-                      }`}
+          className="mt-5 w-full bg-green-500 text-black py-3 rounded-lg hover:bg-green-600 transition"
           disabled={procesando}
         >
           {procesando ? "Procesando..." : "💳 Confirmar Pago"}
