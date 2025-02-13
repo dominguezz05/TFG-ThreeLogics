@@ -300,13 +300,13 @@ export default function Productos() {
                 <button
                   type="button"
                   onClick={() => setModalAbierto(false)}
-                  className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md transition"
+                  className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md transition cursor-pointer"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition"
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition cursor-pointer"
                 >
                   Guardar Cambios
                 </button>
