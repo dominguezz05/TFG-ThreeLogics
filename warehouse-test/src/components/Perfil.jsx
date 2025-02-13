@@ -274,7 +274,7 @@ export default function Perfil() {
 
           <button
             type="submit"
-            className="w-full bg-teal-500 text-black py-2 rounded-lg hover:bg-teal-400 transition disabled:opacity-50 mt-4"
+            className="w-full bg-teal-500 text-black py-2 rounded-lg hover:bg-teal-400 transition disabled:opacity-50 mt-4 cursor-pointer"
           >
             Guardar Cambios
           </button>

@@ -144,7 +144,7 @@ export default function Navbar() {
 
                   <button
                     onClick={logout}
-                    className="w-full bg-red-500 text-white py-2 rounded-lg hover:bg-red-700 transition"
+                    className="w-full bg-red-500 text-white py-2 rounded-lg hover:bg-red-700 transition cursor-pointer" 
                   >
                     Cerrar sesión
                   </button>
