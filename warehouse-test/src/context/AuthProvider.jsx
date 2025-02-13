@@ -33,6 +33,7 @@ export function AuthProvider({ children }) {
       email: data.usuario.email, // ✅ Asegurar que el email se guarda
       rol: data.usuario.rol,
       lastPasswordChange: data.usuario.lastPasswordChange || null, // ✅ Almacenar fecha de último cambio de contraseña
+      imagenPerfil: data.usuario.imagenPerfil || null, // 🔹 Asegurarnos de guardar la imagen
     };
 
     // Guardar en localStorage
@@ -55,6 +56,7 @@ export function AuthProvider({ children }) {
     const usuarioActualizado = {
       ...usuario,
       ...datosActualizados,
+      imagenPerfil: datosActualizados.imagenPerfil || usuario.imagenPerfil, // 🔹 Asegurar que la imagen se actualiza
     };
 
     // Si el usuario cambió la contraseña, actualizar `lastPasswordChange`

@@ -33,10 +33,16 @@
       }
       setIsMenuOpen(false); // Cierra el menú en móvil después de hacer scroll
     };
-    const imagenPerfil = usuario?.imagenPerfil
-    ? `data:image/png;base64,${usuario.imagenPerfil}`
-    : "/default-avatar.png"; // Ruta a la imagen predeterminada
+    const [imagenPerfil, setImagenPerfil] = useState("src/assets/avatar.png"); // Imagen por defecto
 
+    useEffect(() => {
+      if (usuario?.imagenPerfil) {
+        setImagenPerfil(usuario.imagenPerfil.startsWith("http") 
+          ? usuario.imagenPerfil 
+          : `data:image/png;base64,${usuario.imagenPerfil}`);
+      }
+    }, [usuario]); // Se actualiza cuando cambia el usuario
+    
     return (
       <nav
         className={`fixed top-0 left-0 w-full bg-black text-white px-8 py-4 flex justify-between items-center transition-transform duration-300 z-50 ${
@@ -93,6 +99,7 @@
               className="text-sm flex items-center space-x-2 hover:text-teal-400 transition cursor-pointer"
             >
               <img src={imagenPerfil} alt="Perfil" className="w-8 h-8 rounded-full border-2 border-teal-500" />
+
               <span>{usuario?.nombre || "Usuario"}</span>
             </button>
 

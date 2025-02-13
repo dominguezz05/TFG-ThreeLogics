@@ -226,12 +226,14 @@ export default function Perfil() {
               Nueva Contraseña (opcional)
             </label>
             <input
-              type={showNewPassword ? "text" : "password"}
-              placeholder="Mínimo 8 caracteres, 1 mayúscula y 1 símbolo"
-              value={nuevoPassword}
-              onChange={handlePasswordChange}
-              className="w-full p-2 mt-1 rounded bg-gray-800 text-white pr-10"
-            />
+  type={showNewPassword ? "text" : "password"}
+  placeholder="Mínimo 8 caracteres, 1 mayúscula y 1 símbolo"
+  value={nuevoPassword}
+  onChange={handlePasswordChange}
+  className="w-full p-2 mt-1 rounded bg-gray-800 text-white pr-10"
+  autoComplete="new-password"
+/>
+
             <button
               type="button"
               onClick={() => setShowNewPassword(!showNewPassword)}
