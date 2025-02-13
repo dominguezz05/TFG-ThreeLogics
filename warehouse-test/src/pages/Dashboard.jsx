@@ -122,7 +122,8 @@ export default function Dashboard() {
       {/* 📥 Botón para generar reporte PDF */}
       <button
         onClick={descargarPDF}
-        className="mt-6 bg-blue-500 hover:bg-blue-600 text-white font-semibold px-5 py-3 rounded-lg shadow-md focus:ring-2 focus:ring-blue-300"
+        className="mt-6 bg-blue-500 hover:bg-blue-600 text-white font-semibold px-5 py-3 rounded-lg shadow-md focus:ring-2 focus:ring-blue-300 cursor-pointer"
+        
       >
         📥 Descargar Reporte PDF
       </button>

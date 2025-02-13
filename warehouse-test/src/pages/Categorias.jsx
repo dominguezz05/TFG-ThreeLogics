@@ -82,6 +82,8 @@ function Categorias() {
           <button
             onClick={() => navigate("/crear-categoria")}
             className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-md shadow-md transition"
+            style={{cursor:'pointer'}}
+
           >
             ➕ Añadir Categoría
           </button>
@@ -101,6 +103,7 @@ function Categorias() {
                   <button
                     onClick={() => handleEditar(categoria)}
                     className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded"
+                    style={{cursor:'pointer'}}
                   >
                     ✏️ Editar
                   </button>
@@ -124,12 +127,15 @@ function Categorias() {
             <button
               onClick={handleGuardarEdicion}
               className="ml-4 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-md"
+              style={{cursor:'pointer'}}
+
             >
               Guardar Cambios
             </button>
             <button
               onClick={() => setEditarCategoria(null)}
               className="ml-4 bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-md"
+              style={{cursor:'pointer'}}
             >
               Cancelar
             </button>

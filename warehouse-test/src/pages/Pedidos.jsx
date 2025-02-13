@@ -87,7 +87,9 @@ export default function Pedidos() {
         {/* 📌 Botón para ir a la página de crear pedido */}
         <button
           onClick={() => navigate("/crear-pedido")}
-          className="mb-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+          className="mb-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 transition cursor-pointer"
+          
+
         >
           ➕ Crear Nuevo Pedido
         </button>
