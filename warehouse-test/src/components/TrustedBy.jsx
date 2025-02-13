@@ -1,21 +1,19 @@
-import { useState } from "react";
+import { motion } from "framer-motion";
 import githubLogo from "../assets/github1.png";
 import trelloLogo from "../assets/logotrello.webp";
 import notionLogo from "../assets/notion1.webp";
 import visualLogo from "../assets/vsc.webp";
 import davanteLogo from "../assets/davante.webp";
 
+const logos = [
+  { src: githubLogo, alt: "GitHub", name: "GitHub" },
+  { src: trelloLogo, alt: "Trello", name: "Trello" },
+  { src: notionLogo, alt: "Notion", name: "Notion" },
+  { src: visualLogo, alt: "VS Code", name: "VS Code" },
+  { src: davanteLogo, alt: "Davante", name: "Davante" },
+];
+
 export default function TrustedBy() {
-  const [hoveredIndex, setHoveredIndex] = useState(null);
-
-  const logos = [
-    { src: githubLogo, alt: "GitHub", name: "GitHub" },
-    { src: trelloLogo, alt: "Trello", name: "Trello" },
-    { src: notionLogo, alt: "Notion", name: "Notion" },
-    { src: visualLogo, alt: "VS Code", name: "VS Code" },
-    { src: davanteLogo, alt: "Davante", name: "Davante" },
-  ];
-
   return (
     <section className="py-16 bg-black text-gray-400">
       <div className="max-w-7xl mx-auto text-center px-6">
@@ -23,34 +21,30 @@ export default function TrustedBy() {
           Trusted by teams at
         </p>
 
-        {/* Contenedor de logos con diseño responsive */}
+        {/* Contenedor de logos con animación */}
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-8 place-items-center">
-          {logos.map((logo, index) => (
-            <div
-              key={index}
+          {logos.map((logo) => (
+            <motion.div
+              key={logo.alt}
               className="flex flex-col items-center group"
-              onMouseEnter={() => setHoveredIndex(index)}
-              onMouseLeave={() => setHoveredIndex(null)}
+              whileHover={{ scale: 1.1 }}
             >
-              <img
+              <motion.img
                 src={logo.src}
                 alt={logo.alt}
-                className={`h-12 sm:h-14 md:h-16 grayscale transition-opacity duration-500 ${
-                  hoveredIndex !== null && hoveredIndex !== index
-                    ? "opacity-30"
-                    : "opacity-80 group-hover:opacity-100"
-                }`}
+                className="h-12 sm:h-14 md:h-16 grayscale transition-all duration-500 group-hover:grayscale-0"
+                whileHover={{ opacity: 1 }}
+                initial={{ opacity: 0.6 }}
+                animate={{ opacity: 0.8 }}
+                transition={{ duration: 0.5 }}
               />
-              <p
-                className={`mt-2 text-sm sm:text-base transition-opacity duration-500 ${
-                  hoveredIndex !== null && hoveredIndex !== index
-                    ? "text-gray-600"
-                    : "group-hover:text-white"
-                }`}
+              <motion.p
+                className="mt-2 text-sm sm:text-base transition-all duration-300 group-hover:text-white"
+                whileHover={{ scale: 1.05 }}
               >
                 {logo.name}
-              </p>
-            </div>
+              </motion.p>
+            </motion.div>
           ))}
         </div>
       </div>
