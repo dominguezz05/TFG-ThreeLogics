@@ -121,21 +121,17 @@ export default function Pedidos() {
                   <div className="mt-3">
                     <label className="font-semibold text-white">Estado: </label>
                     <select
-                      className="ml-2 p-2 border border-gray-700 bg-gray-800 text-white rounded-lg cursor-pointer focus:ring-2 focus:ring-teal-400"
-                      value={pedido.estado}
-                      onChange={(e) =>
-                        actualizarEstado(pedido.id, e.target.value)
-                      }
-                    >
-                      <option value="pendiente">🟡 Pendiente</option>
-                      <option value="pagar">💳 Pagar</option>
-                      <option value="enviado" disabled>
-                        📦 Enviado (Automático)
-                      </option>
-                      <option value="completado" disabled>
-                        ✅ Completado (Automático)
-                      </option>
-                    </select>
+  className="ml-2 p-2 border border-gray-700 bg-gray-800 text-white rounded-lg cursor-pointer focus:ring-2 focus:ring-teal-400"
+  value={pedido.estado}
+  onChange={(e) => actualizarEstado(pedido.id, e.target.value)}
+  disabled={pedido.estado === "completado" ||pedido.estado === "enviado"} // 🔹 Deshabilitar si el pedido está completado
+>
+  <option value="pendiente">🟡 Pendiente</option>
+  <option value="pagar">💳 Pagar</option>
+  <option value="enviado" disabled>📦 Enviado (Automático)</option>
+  <option value="completado" disabled>✅ Completado (Automático)</option>
+</select>
+
                   </div>
                 ) : (
                   <p

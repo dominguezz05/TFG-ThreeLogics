@@ -88,6 +88,7 @@ router.get("/", verificarToken, async (req, res) => {
 });
 
 // 📌 Cambiar estado de un pedido
+// 📌 Cambiar estado de un pedido (Evitar que pase a "enviado" hasta el pago)
 router.put("/:id/estado", verificarToken, async (req, res) => {
   const { estado } = req.body;
   const { id } = req.params;
@@ -114,33 +115,22 @@ router.put("/:id/estado", verificarToken, async (req, res) => {
       return res.status(400).json({ error: "Estado no permitido" });
     }
 
-    // 📌 Si el estado es "pagar", simular la pasarela de pago
-    if (estado === "pagar") {
-      setTimeout(async () => {
-        pedido.estado = "enviado";
-        await pedido.save();
-        console.log(
-          `💳 Pago simulado, pedido ${pedido.id} marcado como enviado.`
-        );
-      }, 3000);
-      return res.json({
-        mensaje: "⏳ Redirigiendo a pasarela de pago...",
-        pedido,
-      });
+    // Evitar que pase a "enviado" sin haber pagado
+    if (estado === "enviado" && pedido.estado !== "pagar") {
+      return res
+        .status(400)
+        .json({ error: "El pedido debe pagarse antes de ser enviado" });
     }
 
-    // 📌 Si el estado cambia a "completado", actualizar stock y registrar movimientos
+    // Si el estado cambia a "completado", actualizar stock y registrar movimientos
     if (estado === "completado") {
       for (const detalle of pedido.DetallePedidos) {
         const producto = await Producto.findByPk(detalle.productoId);
-
         if (!producto) continue;
 
-        // 🔄 Sumar cantidad al stock
         producto.cantidad += detalle.cantidad;
         await producto.save();
 
-        // 🔄 Registrar movimiento de entrada
         await Movimiento.create({
           productoId: producto.id,
           tipo: "entrada",
@@ -151,13 +141,35 @@ router.put("/:id/estado", verificarToken, async (req, res) => {
       }
     }
 
-    // 📌 Actualizar el estado del pedido
     await pedido.update({ estado });
-
     res.json({ mensaje: `Pedido actualizado a ${estado}`, pedido });
   } catch (error) {
     console.error("Error al actualizar estado del pedido:", error);
     res.status(500).json({ error: "Error al actualizar estado del pedido" });
+  }
+});
+// 📌 Obtener un pedido por ID
+router.get("/:id", verificarToken, async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const pedido = await Pedido.findByPk(id, {
+      include: [
+        {
+          model: DetallePedido,
+          include: { model: Producto, attributes: ["nombre", "precio"] },
+        },
+      ],
+    });
+
+    if (!pedido) {
+      return res.status(404).json({ error: "Pedido no encontrado" });
+    }
+
+    res.json(pedido);
+  } catch (error) {
+    console.error("❌ Error al obtener el pedido:", error);
+    res.status(500).json({ error: "Error al obtener el pedido" });
   }
 });
 
