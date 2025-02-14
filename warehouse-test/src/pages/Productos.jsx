@@ -284,18 +284,21 @@ export default function Productos() {
                 className="border p-2 w-full rounded-md"
                 required
               />
-              <select
-                name="categoriaId"
-                value={productoEditado.categoriaId}
-                onChange={handleChangeEdicion}
-                className="border p-2 w-full rounded-md"
-              >
-                {categorias.map((categoria) => (
-                  <option key={categoria.id} value={categoria.id}>
-                    {categoria.nombre}
-                  </option>
-                ))}
-              </select>
+             // En el formulario de edición, cambiar:
+<select
+  name="categoriaId"
+  value={productoEditado.categoriaId || ""}
+  onChange={handleChangeEdicion}
+  className="border p-2 w-full rounded-md"
+>
+  <option value="" disabled>Selecciona una categoría</option>
+  {categorias.map((categoria) => (
+    <option key={categoria.id} value={categoria.id}>
+      {categoria.nombre}
+    </option>
+  ))}
+</select>
+
               <div className="flex justify-end gap-2">
                 <button
                   type="button"

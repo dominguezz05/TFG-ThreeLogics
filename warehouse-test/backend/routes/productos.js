@@ -10,10 +10,17 @@ router.post("/", verificarToken, async (req, res) => {
   try {
     const { nombre, descripcion, precio, cantidad, categoriaId } = req.body;
 
-    if (!nombre || !precio || cantidad === undefined) {
+    if (!nombre || !precio || cantidad === undefined || !categoriaId) {
       return res
         .status(400)
-        .json({ error: "Todos los campos son obligatorios" });
+        .json({
+          error: "Todos los campos son obligatorios, incluida la categoría",
+        });
+    }
+
+    const categoria = await Categoria.findByPk(categoriaId);
+    if (!categoria) {
+      return res.status(404).json({ error: "Categoría no encontrada" });
     }
 
     const producto = await Producto.create({
@@ -22,7 +29,7 @@ router.post("/", verificarToken, async (req, res) => {
       precio,
       cantidad,
       categoriaId,
-      usuarioId: req.usuario.id, // 👈 Asigna el producto al usuario autenticado
+      usuarioId: req.usuario.id,
     });
 
     res.status(201).json(producto);
