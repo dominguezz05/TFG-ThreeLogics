@@ -8,21 +8,46 @@ import { verificarToken } from "../middleware/authMiddleware.js";
 // Crear un nuevo producto
 router.post("/", verificarToken, async (req, res) => {
   try {
-    const { nombre, descripcion, precio, cantidad, categoriaId } = req.body;
+    let {
+      nombre,
+      descripcion,
+      precio,
+      cantidad,
+      categoriaId,
+      categoriaNombre,
+    } = req.body;
 
-    if (!nombre || !precio || cantidad === undefined || !categoriaId) {
+    if (!nombre || !precio || cantidad === undefined) {
       return res
         .status(400)
-        .json({
-          error: "Todos los campos son obligatorios, incluida la categoría",
+        .json({ error: "Todos los campos son obligatorios." });
+    }
+
+    let categoria;
+
+    // 🚀 Si no se envía una categoría ID, se crea automáticamente con el nombre
+    if (!categoriaId && categoriaNombre) {
+      categoria = await Categoria.findOne({
+        where: { nombre: categoriaNombre },
+      });
+
+      if (!categoria) {
+        categoria = await Categoria.create({
+          nombre: categoriaNombre,
+          usuarioId: req.usuario.id,
         });
+      }
+
+      categoriaId = categoria.id;
     }
 
-    const categoria = await Categoria.findByPk(categoriaId);
-    if (!categoria) {
-      return res.status(404).json({ error: "Categoría no encontrada" });
+    if (!categoriaId) {
+      return res
+        .status(400)
+        .json({ error: "No se pudo determinar una categoría válida." });
     }
 
+    // ✅ Crear el producto con la categoría asegurada
     const producto = await Producto.create({
       nombre,
       descripcion,

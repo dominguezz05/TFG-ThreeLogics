@@ -17,6 +17,7 @@ const generarToken = (usuario) => {
 };
 
 // ✅ Registro de usuario
+// ✅ Registro de usuario
 export const register = async (req, res) => {
   try {
     console.log("Datos recibidos en backend:", req.body);
@@ -27,10 +28,20 @@ export const register = async (req, res) => {
       rol = "usuario";
     }
 
-    // Verificar si el email ya está registrado
-    const usuarioExistente = await Usuario.findOne({ where: { email } });
+    // Verificar si el email ya está registrado, incluyendo usuarios eliminados
+    const usuarioExistente = await Usuario.findOne({
+      where: { email },
+      paranoid: false, // 🚀 Esto permite buscar entre los eliminados
+    });
+
     if (usuarioExistente) {
-      return res.status(400).json({ error: "El email ya está registrado" });
+      if (usuarioExistente.deletedAt) {
+        return res.status(400).json({
+          error:
+            "Este correo está asociado a un usuario dado de baja. Contacta con soporte.",
+        });
+      }
+      return res.status(400).json({ error: "El email ya está registrado." });
     }
 
     // Encriptar la contraseña
@@ -42,7 +53,8 @@ export const register = async (req, res) => {
       email,
       password: hashedPassword,
       rol,
-      lastPasswordChange: new Date(), // ✅ Asegura que no sea NULL
+      createdAt: new Date(),
+      lastPasswordChange: new Date(),
     });
 
     res.status(201).json({ mensaje: "Usuario registrado con éxito", usuario });
@@ -51,19 +63,28 @@ export const register = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-
-// ✅ Inicio de sesión
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Buscar usuario por email
-    const usuario = await Usuario.findOne({ where: { email } });
+    // Buscar usuario por email, incluyendo eliminados
+    const usuario = await Usuario.findOne({
+      where: { email },
+      paranoid: false, // ✅ Buscar en registros eliminados
+    });
 
     if (!usuario) {
       return res
         .status(400)
-        .json({ error: "Usuario o contraseña incorrectos" });
+        .json({ error: "Usuario o contraseña incorrectos." });
+    }
+
+    // Verificar si el usuario está eliminado (soft delete)
+    if (usuario.deletedAt !== null) {
+      return res.status(403).json({
+        error:
+          "Esta cuenta ha sido dada de baja. Contacta con soporte si deseas recuperarla.",
+      });
     }
 
     // Verificar contraseña
@@ -71,10 +92,10 @@ export const login = async (req, res) => {
     if (!esValido) {
       return res
         .status(400)
-        .json({ error: "Usuario o contraseña incorrectos" });
+        .json({ error: "Usuario o contraseña incorrectos." });
     }
 
-    // Generar token con `lastPasswordChange` incluido
+    // Generar token
     const token = generarToken(usuario);
 
     res.json({
@@ -89,26 +110,36 @@ export const login = async (req, res) => {
     });
   } catch (error) {
     console.error("Error en login:", error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: "Error en el servidor." });
   }
 };
-
 // ✅ Actualización de perfil (nombre, email y opcionalmente contraseña)
 export const actualizarPerfil = async (req, res) => {
   try {
     const { nombre, email, nuevoPassword } = req.body;
 
-    // Buscar usuario autenticado
-    const usuario = await Usuario.findByPk(req.usuario.id);
+    // 🔹 Buscar usuario incluyendo eliminados
+    const usuario = await Usuario.findByPk(req.usuario.id, { paranoid: false });
+
     if (!usuario) {
-      return res.status(404).json({ error: "Usuario no encontrado" });
+      return res.status(404).json({ error: "❌ Usuario no encontrado." });
     }
 
-    // Verificar si el nuevo email ya está en uso por otro usuario
+    // 🔹 Verificar si el usuario fue eliminado
+    if (usuario.deletedAt) {
+      return res
+        .status(403)
+        .json({
+          error:
+            "❌ Esta cuenta ha sido dada de baja. Contacta con soporte para recuperarla.",
+        });
+    }
+
+    // ✅ Verificar si el nuevo email ya está en uso por otro usuario
     if (email !== usuario.email) {
       const emailExistente = await Usuario.findOne({ where: { email } });
       if (emailExistente) {
-        return res.status(400).json({ error: "El email ya está en uso" });
+        return res.status(400).json({ error: "❌ El email ya está en uso." });
       }
     }
 
@@ -127,7 +158,7 @@ export const actualizarPerfil = async (req, res) => {
 
       if (diferenciaDias < 14) {
         return res.status(400).json({
-          error: `Solo puedes cambiar la contraseña cada 14 días. Te quedan ${
+          error: `❌ Solo puedes cambiar la contraseña cada 14 días. Te quedan ${
             14 - diferenciaDias
           } días.`,
         });
@@ -136,7 +167,7 @@ export const actualizarPerfil = async (req, res) => {
       // Encriptar y actualizar nueva contraseña
       const hashedPassword = await bcrypt.hash(nuevoPassword, 10);
       usuario.password = hashedPassword;
-      usuario.lastPasswordChange = ahora; // ✅ Actualizar la fecha del último cambio
+      usuario.lastPasswordChange = ahora;
     }
 
     await usuario.save();
@@ -151,7 +182,7 @@ export const actualizarPerfil = async (req, res) => {
     });
   } catch (error) {
     console.error("❌ Error al actualizar perfil:", error);
-    res.status(500).json({ error: "❌ Error al actualizar perfil" });
+    res.status(500).json({ error: "❌ Error al actualizar perfil." });
   }
 };
 

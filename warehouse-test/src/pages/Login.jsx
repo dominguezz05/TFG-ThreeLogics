@@ -55,17 +55,21 @@ export default function Login() {
         email: sanitizedEmail,
         password: sanitizedPassword,
       });
+      
       login(response.data);
       toast.success("Inicio de sesión exitoso.");
       navigate("/productos");
+    
     } catch (error) {
-      toast.error(
-        "Credenciales incorrectas. Por favor, inténtalo de nuevo: " +
-          error.message
-      );
+      if (error.response?.status === 403) {
+        toast.error("Esta cuenta ha sido dada de baja. Contacta con soporte si deseas recuperarla.");
+      } else {
+        toast.error("Credenciales incorrectas. Por favor, inténtalo de nuevo.");
+      }
     } finally {
       setLoading(false);
     }
+    
   };
 
   return (

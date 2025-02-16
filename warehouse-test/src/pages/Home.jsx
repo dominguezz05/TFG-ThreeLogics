@@ -6,6 +6,7 @@ import TestimonialSlider from "../components/TestimonialSlider";
 import Footer from "../components/Footer";
 import Services from "../components/Services";
 import WebDevelopment from "../components/WebDevelopment";
+import UltimosClientes from "../components/UltimosClientes";
 
 import InstagramGallery from "../components/InstragramGallery";
 
@@ -30,6 +31,7 @@ const Home = () => {
       <div id="testimonial-slider">
         <TestimonialSlider />
       </div>
+      <UltimosClientes />
       <Footer />
     </div>
   );

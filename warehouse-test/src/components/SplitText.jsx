@@ -12,7 +12,7 @@ const SplitText = ({
   threshold = 0.1,
   rootMargin = "-100px",
   textAlign = "center",
-  onLetterAnimationComplete,
+  onLetterAnimationComplete = () => {},
 }) => {
   const words = text.split(" ").map((word) => word.split(""));
   const letters = words.flat();
@@ -103,19 +103,6 @@ SplitText.propTypes = {
   rootMargin: PropTypes.string,
   textAlign: PropTypes.string,
   onLetterAnimationComplete: PropTypes.func,
-};
-
-SplitText.defaultProps = {
-  text: "",
-  className: "",
-  delay: 100,
-  animationFrom: { opacity: 0, transform: "translate3d(0,40px,0)" },
-  animationTo: { opacity: 1, transform: "translate3d(0,0,0)" },
-  easing: "easeOutCubic",
-  threshold: 0.1,
-  rootMargin: "-100px",
-  textAlign: "center",
-  onLetterAnimationComplete: () => {},
 };
 
 export default SplitText;

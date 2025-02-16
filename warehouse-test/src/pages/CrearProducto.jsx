@@ -42,42 +42,65 @@ function CrearProducto() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     try {
       let categoriaIdFinal = producto.categoriaId;
-
-      // 🚀 Crear nueva categoría si el usuario eligió "crear nueva"
-      if (creandoCategoria && nuevaCategoria.trim() !== "") {
-        // Verificar si ya existe la categoría
-        const existeCategoria = categorias.find(c => c.nombre.toLowerCase() === nuevaCategoria.toLowerCase());
-
+  
+      // 🚀 Si no hay categorías disponibles, o si el usuario quiere crear una nueva categoría
+      if (!categoriaIdFinal || creandoCategoria) {
+        if (!nuevaCategoria.trim()) {
+          toast.error("❌ Debes ingresar un nombre para la nueva categoría.");
+          return;
+        }
+  
+        // 🔹 Verificar si la categoría ya existe
+        const existeCategoria = categorias.find(
+          (c) => c.nombre.toLowerCase() === nuevaCategoria.toLowerCase()
+        );
+  
         if (existeCategoria) {
           categoriaIdFinal = existeCategoria.id;
           toast.info(`ℹ️ La categoría "${nuevaCategoria}" ya existe y será usada.`);
         } else {
+          // 🛑 Crear la categoría primero
           const responseCategoria = await api.post("/categorias", { nombre: nuevaCategoria });
-          categoriaIdFinal = responseCategoria.data.id;
+  
+          categoriaIdFinal = responseCategoria.data.categoria.id;
           toast.success(`✅ Categoría "${nuevaCategoria}" creada con éxito!`);
-
-          // Actualizar categorías en el frontend
-          setCategorias([...categorias, responseCategoria.data]);
+  
+          // 🔹 Actualizar estado de categorías en el frontend
+          setCategorias((prevCategorias) => [...prevCategorias, responseCategoria.data.categoria]);
+  
+          // Resetear el estado de nueva categoría
+          setNuevaCategoria("");
+          setCreandoCategoria(false);
         }
       }
-
-      // Crear producto con la categoría final
-      const response = await api.post("/productos", {
-        ...producto,
-        categoriaId: categoriaIdFinal,
+  
+      // 🚨 Validación: Si `categoriaIdFinal` sigue vacío, mostrar error
+      if (!categoriaIdFinal) {
+        toast.error("❌ No se pudo obtener la categoría.");
+        return;
+      }
+  
+      // ✅ Crear el producto después de asegurar que la categoría existe
+      const responseProducto = await api.post("/productos", {
+        nombre: producto.nombre,
+        descripcion: producto.descripcion,
+        precio: producto.precio,
+        cantidad: producto.cantidad,
+        categoriaId: categoriaIdFinal, // 🚀 Ahora la categoría está asegurada
         usuarioId: usuario?.id || null,
       });
-
-      toast.success(`✅ Producto "${response.data.nombre}" añadido con éxito!`);
+  
+      toast.success(`✅ Producto "${responseProducto.data.nombre}" añadido con éxito!`);
       navigate("/productos");
-
+  
     } catch (error) {
       toast.error(error.response?.data?.error || "❌ Error al añadir producto");
     }
   };
+  
 
 
   return (
