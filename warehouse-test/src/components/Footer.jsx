@@ -77,7 +77,7 @@ export default function Footer() {
               <a href="#" className="text-gray-400 hover:text-teal-400">
                 <Github className="w-6 h-6 inline" /> GitHub
               </a>
-              <a href="#" className="text-gray-400 hover:text-teal-400">
+              <a href="https://www.instagram.com/threelogicsenterprise/" className="text-gray-400 hover:text-teal-400">
                 <Instagram className="w-6 h-6 inline" /> Instagram
               </a>
             </div>
