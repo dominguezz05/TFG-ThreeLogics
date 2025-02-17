@@ -12,26 +12,21 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
 // 📌 Obtener perfil del usuario autenticado
-// 📌 Ruta para obtener el perfil
-// 📌 Obtener perfil del usuario autenticado
 router.get("/perfil", verificarToken, async (req, res) => {
   try {
-    // 🔹 Buscar usuario incluyendo eliminados
     const usuario = await Usuario.findByPk(req.usuario.id, {
       attributes: ["nombre", "email", "imagenPerfil", "deletedAt"],
-      paranoid: false, // 🚀 Permite traer usuarios eliminados
+      paranoid: false,
     });
 
+    // ✅ En vez de un error 404, devolvemos usuario: null
     if (!usuario) {
-      return res.status(404).json({ error: "Usuario no encontrado." });
+      return res.json({ usuario: null }); // 👈 ¡Ya no envía error 404!
     }
 
-    // 🔹 Si el usuario está dado de baja, evitar que el frontend lo siga buscando
+    // 🔹 Si el usuario está dado de baja, también devolvemos usuario: null
     if (usuario.deletedAt) {
-      return res.status(403).json({
-        error:
-          "❌ Esta cuenta ha sido dada de baja. Contacta con soporte para recuperarla.",
-      });
+      return res.json({ usuario: null });
     }
 
     res.json({
@@ -40,7 +35,7 @@ router.get("/perfil", verificarToken, async (req, res) => {
         email: usuario.email,
         imagenPerfil: usuario.imagenPerfil
           ? `data:image/png;base64,${usuario.imagenPerfil.toString("base64")}`
-          : null, // ✅ Convertir imagen correctamente a Base64
+          : null,
       },
     });
   } catch (error) {

@@ -1,23 +1,29 @@
 import { useState } from "react";
-import { Mail, MapPin, Linkedin, Github, Instagram } from "lucide-react"; // Librería de iconos
+import { api } from "../services/api"; // Importamos la API para hacer peticiones
+import { toast } from "react-toastify";
+import { Mail, MapPin, Linkedin, Github, Instagram } from "lucide-react"; 
 
 export default function Footer() {
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [message, setMessage] = useState("");
 
-  const handleSubscribe = () => {
+  const handleSubscribe = async () => {
     if (!email || !email.includes("@")) {
-      setMessage("❌ Introduce un correo válido");
+      toast.error("❌ Introduce un correo válido");
       return;
     }
-    
+
     setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-      setMessage("✅ Suscripción exitosa");
+
+    try {
+      const response = await api.post("/newsletter/suscribirse", { email });
+      toast.success(response.data.mensaje);
       setEmail("");
-    }, 2000);
+    } catch (error) {
+      toast.error(error.response?.data?.error || "Error al suscribirse");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -41,26 +47,25 @@ export default function Footer() {
               className="px-6 py-3 w-80 text-lg rounded-l bg-gray-800 text-white outline-none"
             />
             <button
-              className="bg-teal-500 px-6 py-3 text-lg rounded-r text-black font-bold hover:bg-teal-400 transition flex items-center"
+              className="bg-teal-500 px-6 py-3 text-lg rounded-r text-black font-bold hover:bg-teal-400 transition flex items-center cursor-pointer"
               onClick={handleSubscribe}
               disabled={isLoading}
             >
               {isLoading ? "⏳ Enviando..." : "Suscribirse"}
             </button>
           </div>
-          {message && <p className="mt-2 text-sm text-gray-400">{message}</p>}
         </div>
 
         {/* Información y enlaces */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-16 text-center md:text-left">
           
-          {/* Contacto - Alineado a la izquierda */}
+          {/* Contacto */}
           <div className="md:text-left">
             <h4 className="text-2xl font-semibold mb-6 text-teal-400">
               Contacto
             </h4>
             <p className="text-gray-300 text-lg flex items-center gap-2">
-              <Mail className="w-5 h-5 text-teal-400" /> info@threelogics.com
+              <Mail className="w-5 h-5 text-teal-400" /> threelogicsapp@gmail.com
             </p>
             <p className="text-gray-300 text-lg mt-2 flex items-center gap-2">
               <MapPin className="w-5 h-5 text-teal-400" /> Fuenlabrada, España
@@ -78,7 +83,7 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Soluciones - Centrado */}
+          {/* Soluciones */}
           <div className="md:text-center">
             <h4 className="text-2xl font-semibold mb-6 text-teal-400">
               Soluciones
@@ -90,7 +95,7 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Recursos - Alineado a la derecha */}
+          {/* Recursos */}
           <div className="md:text-right">
             <h4 className="text-2xl font-semibold mb-6 text-teal-400">
               Recursos

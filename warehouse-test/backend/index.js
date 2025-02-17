@@ -18,7 +18,7 @@ import {
   Pedido,
   DetallePedido,
 } from "./models/indexModels.js";
-
+import Suscriptor from "./models/Suscriptor.js";
 // Configuración de variables de entorno
 dotenv.config();
 
@@ -31,6 +31,7 @@ import movimientosRoutes from "./routes/movimientos.js";
 import authRoutes from "./routes/auth.js";
 import dashboardRoutes from "./routes/dashboard.js";
 import pedidosRoutes from "./routes/pedidos.js";
+import newsletterRoutes from "./routes/newsletter.js";
 
 const app = express();
 
@@ -46,6 +47,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/pedidos", pedidosRoutes);
 app.use("/api/usuarios", usuarioRoutes);
+app.use("/api/newsletter", newsletterRoutes);
 
 app.get("/", (req, res) => {
   res.send("Servidor funcionando correctamente");

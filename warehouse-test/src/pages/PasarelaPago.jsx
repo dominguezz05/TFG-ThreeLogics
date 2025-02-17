@@ -14,9 +14,10 @@ export default function PasarelaPago() {
   const [cardNumber, setCardNumber] = useState("");
   const [expiryDate, setExpiryDate] = useState("");
   const [cvv, setCvv] = useState("");
+  const { usuario } = useContext(AuthContext);
+  const cardHolderName = usuario?.nombre || "Usuario Desconocido";
+  
 
-  const { user } = useContext(AuthContext);
-  const cardHolderName = user?.name || "Usuario Desconocido";
 
   // Datos correctos que deben coincidir
   const validCardNumber = "4000-1234-5678-9010";
@@ -99,39 +100,49 @@ export default function PasarelaPago() {
           de tu tarjeta y confirma el pago.
         </p>
 
-        {/* 💳 Tarjeta de crédito interactiva */}
-        <motion.div
-          className="relative w-full h-40 cursor-pointer"
-          onClick={() => setIsFlipped(!isFlipped)}
-          animate={{ rotateY: isFlipped ? 180 : 0 }}
-          transition={{ duration: 0.6 }}
-          style={{ transformStyle: "preserve-3d" }}
-        >
-          {/* Lado frontal */}
-          <div
-            className="absolute w-full h-full bg-gradient-to-r from-gray-800 to-gray-700 p-5 rounded-lg shadow-lg"
-            style={{ backfaceVisibility: "hidden" }}
-          >
-            <div className="flex justify-between items-center">
-              <h2 className="text-lg font-semibold text-white">Visa</h2>
-              <img src="./visa.webp" alt="Chip" className="w-8 h-6 opacity-75" />
-            </div>
-            <p className="text-lg font-mono tracking-widest text-white mt-2">
-              4000 1234 5678 9010
-            </p>
-            <div className="flex justify-between items-center mt-3">
-              <p className="text-sm text-gray-300">
-                Titular:{" "}
-                <span className="font-semibold text-white">
-                  {cardHolderName}
-                </span>
-              </p>
-              <p className="text-sm text-gray-300">
-                Exp: <span className="font-semibold text-white">12/25</span>
-              </p>
-            </div>
-          </div>
-        </motion.div>
+      {/* 💳 Tarjeta de crédito interactiva */}
+<motion.div
+  className="relative w-full h-40 cursor-pointer"
+  onClick={() => setIsFlipped(!isFlipped)}
+  animate={{ rotateY: isFlipped ? 180 : 0 }}
+  transition={{ duration: 0.6 }}
+  style={{ transformStyle: "preserve-3d", perspective: 1000 }} // Agregar perspectiva para el efecto 3D
+>
+  {/* Lado frontal */}
+  <div
+    className="absolute w-full h-full bg-gradient-to-r from-gray-800 to-gray-700 p-5 rounded-lg shadow-lg"
+    style={{ backfaceVisibility: "hidden" }}
+  >
+    <div className="flex justify-between items-center">
+      <h2 className="text-lg font-semibold text-white">Visa</h2>
+      <img src="./visa.webp" alt="Visa Logo" className="w-12 h-8 opacity-75" />
+    </div>
+    <p className="text-lg font-mono tracking-widest text-white mt-2">
+      4000 1234 5678 9010
+    </p>
+    <div className="flex justify-between items-center mt-3">
+      <p className="text-sm text-gray-300">
+        Titular:{" "}
+        <span className="font-semibold text-white">{cardHolderName}</span>
+      </p>
+      <p className="text-sm text-gray-300">
+        Exp: <span className="font-semibold text-white">12/25</span>
+      </p>
+    </div>
+  </div>
+
+  {/* Lado trasero - CVV */}
+  <div
+    className="absolute w-full h-full bg-gradient-to-r from-gray-900 to-gray-800 p-5 rounded-lg shadow-lg flex flex-col justify-center"
+    style={{ transform: "rotateY(180deg)", backfaceVisibility: "hidden" }}
+  >
+    <div className="w-full h-8 bg-gray-700"></div> {/* Barra negra */}
+    <p className="text-sm text-gray-300 mt-4">Código de Seguridad (CVV)</p>
+    <p className="text-xl font-bold tracking-wider text-white bg-gray-600 p-2 rounded-md text-center w-20 mx-auto">
+      {cvv || "123"}
+    </p>
+  </div>
+</motion.div>
 
         {/* 📌 Formulario de pago */}
         <form className="grid gap-4 mt-6">
@@ -180,7 +191,7 @@ export default function PasarelaPago() {
         <motion.button
           whileHover={{ scale: 1.05 }}
           onClick={procesarPago}
-          className="mt-5 w-full bg-green-500 text-black py-3 rounded-lg hover:bg-green-600 transition"
+          className="mt-5 w-full bg-green-500 text-black py-3 rounded-lg hover:bg-green-600 transition cursor-pointer" 
           disabled={procesando}
         >
           {procesando ? "Procesando..." : "💳 Confirmar Pago"}

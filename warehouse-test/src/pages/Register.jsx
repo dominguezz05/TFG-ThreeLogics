@@ -52,24 +52,23 @@ export default function Register() {
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    
-    const sanitizedNombre = sanitizeInput(nombre);
-    const sanitizedEmail = sanitizeInput(email);
-    const sanitizedPassword = sanitizeInput(password);
-
+  
     try {
       await api.post("/auth/register", {
-        nombre: sanitizedNombre,
-        email: sanitizedEmail,
-        password: sanitizedPassword,
+        nombre,
+        email,
+        password,
         rol,
       });
-      toast.success("✅ Registro exitoso. Ahora puedes iniciar sesión.");
+  
+      toast.success("Registro exitoso. Revisa tu correo para verificar la cuenta.");
       navigate("/login");
     } catch (error) {
       toast.error(error.response?.data?.error || "Error en el registro");
     }
   };
+  
+  
 
   return (
     <div className="h-screen w-screen flex justify-center items-center bg-black">

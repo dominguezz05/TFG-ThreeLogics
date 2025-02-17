@@ -35,6 +35,15 @@ const Usuario = sequelize.define(
       type: DataTypes.BLOB("medium"),
       allowNull: true,
     },
+    verificado: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false, // ✅ Inicialmente el usuario NO está verificado
+    },
+    tokenVerificacion: {
+      type: DataTypes.STRING, // Guarda el token único
+      allowNull: true,
+    },
   },
   {
     timestamps: true, // ✅ createdAt, updatedAt

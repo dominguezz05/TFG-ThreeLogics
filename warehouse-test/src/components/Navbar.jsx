@@ -98,10 +98,10 @@ export default function Navbar() {
             </button>
             <span className="text-gray-500">|</span>
             <a
-              href="mailto:info@threelogics.com"
+              href="mailto:threelogicsapp@gmail.com"
               className="text-teal-400 hover:text-teal-300 transition"
             >
-              info@threelogics.com
+              threelogicsapp@gmail.com
             </a>
           </>
         ) : (

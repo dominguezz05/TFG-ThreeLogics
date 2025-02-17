@@ -21,37 +21,40 @@
     const [imagenPreview, setImagenPreview] = useState(null); // Previsualización de imagen
 
     // Cargar datos del usuario autenticado al montar el componente
-useEffect(() => {
-  async function fetchUserData() {
-    if (!usuario) return; // 🚀 Evitar llamadas innecesarias si ya se eliminó el usuario
-
-    try {
-      const response = await api.get("/usuarios/perfil");
-      setUser({
-        nombre: response.data.usuario.nombre,
-        email: response.data.usuario.email,
-      });
-
-      // Si el usuario tiene una imagen, cargarla
-      if (response.data.usuario.imagenPerfil) {
-        setImagenPerfil(response.data.usuario.imagenPerfil);
+    useEffect(() => {
+      async function fetchUserData() {
+        if (!usuario) return; // 🚀 Evitar llamadas innecesarias si ya se eliminó el usuario
+    
+        try {
+          const response = await api.get("/usuarios/perfil");
+          setUser({
+            nombre: response.data.usuario.nombre,
+            email: response.data.usuario.email,
+          });
+    
+          // Si el usuario tiene una imagen, cargarla
+          if (response.data.usuario.imagenPerfil) {
+            setImagenPerfil(response.data.usuario.imagenPerfil);
+          }
+        } catch (error) {
+          console.error("❌ Error al obtener perfil:", error);
+    
+          // ✅ Si el usuario no existe o ha sido dado de baja, llevar a la pantalla de carga en lugar de login
+          if (error.response?.status === 404 || error.response?.status === 403) {
+            setUsuario(null);
+            localStorage.removeItem("usuario");
+            navigate("/loading", { state: { mensaje: "Estamos procesando tu salida..." } });
+            return; // 🔥 Evita que se muestre cualquier `toast.error()`
+          }
+    
+          // ⚠️ Solo mostrar error si no es un 404/403
+          toast.error("❌ Error al obtener el perfil. Intenta de nuevo.");
+        }
       }
-    } catch (error) {
-      console.error("❌ Error al obtener perfil:", error);
-
-      // ✅ Si el usuario no existe o está eliminado, limpiar el estado y redirigir al login
-      if (error.response?.status === 404 || error.response?.status === 403) {
-        setUsuario(null);
-        localStorage.removeItem("usuario");
-        navigate("/login");
-        toast.error("❌ Tu cuenta ya no está disponible. Redirigiendo al login...");
-      }
-    }
-  }
-
-  fetchUserData();
-}, [usuario]);
-
+    
+      fetchUserData();
+    }, [usuario]);
+    
     
     // Manejar la subida de imágenes y previsualización
     const handleImagenChange = (e) => {
@@ -174,19 +177,16 @@ useEffect(() => {
         return;
       }
     
-      try {
-        const response = await api.delete("/usuarios/perfil");
+      // ✅ Redirigir primero a la pantalla de carga con un mensaje personalizado
+      navigate("/loading", { state: { mensaje: "Estamos eliminando tu cuenta..." } });
     
-        toast.success(response.data.mensaje || "✅ Cuenta dada de baja correctamente.");
+      try {
+        await api.delete("/usuarios/perfil");
     
         // 🔹 Eliminar usuario inmediatamente para evitar errores
         setUsuario(null);
         localStorage.removeItem("usuario");
     
-        // ✅ Redirigir al login SIN realizar más llamadas a la API
-        setTimeout(() => {
-          navigate("/");
-        }, 500);
       } catch (error) {
         console.error("❌ Error al dar de baja:", error);
         toast.error(error.response?.data?.error || "❌ No se pudo dar de baja la cuenta.");

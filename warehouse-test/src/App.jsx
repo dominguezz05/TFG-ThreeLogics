@@ -15,10 +15,13 @@ import PasarelaPago from "./pages/PasarelaPago";
 import Pedidos from "./pages/Pedidos";
 import CrearPedido from "./pages/CrearPedido";
 import Page404 from "./components/Page404";
+import LoadingScreen from "./components/LoadingScreen";
 import Perfil from "./components/Perfil";
+import VerificarCuenta from "./pages/VerificarCuenta"; // ✅ Importación corregida
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+// ✅ Rutas privadas: Solo accesibles si el usuario está autenticado
 const PrivateRoute = () => {
   const { usuario } = useContext(AuthContext);
   return usuario ? <Outlet /> : <Navigate to="/login" />;
@@ -31,6 +34,7 @@ function App() {
     <div>
       <Navbar />
       <Routes>
+        {/* 🔹 Rutas públicas */}
         <Route path="/" element={<Home />} />
         <Route
           path="/login"
@@ -40,10 +44,14 @@ function App() {
           path="/register"
           element={usuario ? <Navigate to="/productos" /> : <Register />}
         />
-         <Route path="/perfil" element={<Perfil />} />
-        
+        <Route path="/verificar/:token" element={<VerificarCuenta />} />
 
-        {/* ✅ Agrupamos rutas privadas dentro de <PrivateRoute> */}
+        {/* 🔹 Otras rutas públicas */}
+        <Route path="/perfil" element={<Perfil />} />
+        <Route path="/loading" element={<LoadingScreen />} />
+        <Route path="/pago/:id" element={<PasarelaPago />} />
+
+        {/* 🔒 Rutas privadas dentro de <PrivateRoute> */}
         <Route element={<PrivateRoute />}>
           <Route path="/productos" element={<Productos />} />
           <Route path="/movimientos" element={<Movimientos />} />
@@ -55,10 +63,12 @@ function App() {
           <Route path="/crear-pedido" element={<CrearPedido />} />
         </Route>
 
-        <Route path="/pago/:id" element={<PasarelaPago />} />
+        {/* 🔹 Ruta 404 */}
         <Route path="*" element={<Page404 />} />
       </Routes>
-      <ToastContainer position="top-right" autoClose={3000} />
+
+      {/* Notificaciones con react-toastify */}
+      <ToastContainer position="top-right" autoClose={1500} />
     </div>
   );
 }
