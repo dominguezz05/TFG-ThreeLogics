@@ -110,9 +110,12 @@ export default function Hero() {
               boxShadow: "0px 0px 20px rgba(45, 212, 191, 0.8)",
             }}
             whileTap={{ scale: 0.95 }}
-            onClick={() =>
-              footerRef.current?.scrollIntoView({ behavior: "smooth" })
-            }
+            onClick={() => {
+              const footer = document.getElementById("footer");
+              if (footer) {
+                footer.scrollIntoView({ behavior: "smooth" });
+              }
+            }}
             className="px-4 py-2 sm:px-6 sm:py-3 border border-teal-500 text-white rounded-lg font-medium transition-all hover:bg-teal-500 cursor-pointer text-sm sm:text-base"
           >
             Más Información
