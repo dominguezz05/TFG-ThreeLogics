@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
-import Particles from "react-tsparticles";
+import { Particles } from "@tsparticles/react";
 import warehouseImage from "../assets/map3.webp";
 
 export default function Hero() {
