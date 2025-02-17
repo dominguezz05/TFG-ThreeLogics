@@ -1,84 +1,112 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
-import { AuthContext } from "./AuthContext"; // Importamos el contexto separado
+import { jwtDecode } from "jwt-decode";
+import { AuthContext } from "./AuthContext";
 
 export function AuthProvider({ children }) {
   const [usuario, setUsuario] = useState(null);
+  const logoutTimeoutRef = useRef(null);
 
-  // 🔹 Cargar usuario desde localStorage cuando se monta la app
   useEffect(() => {
     const storedUser = localStorage.getItem("usuario");
-    if (storedUser) {
+    const token = localStorage.getItem("token");
+
+    if (storedUser && token) {
       try {
         const parsedUser = JSON.parse(storedUser);
+        const decodedToken = jwtDecode(token);
+        const currentTime = Date.now() / 1000;
+
+        console.log("Token expira en:", decodedToken.exp, "Tiempo actual:", currentTime);
+
+        if (decodedToken.exp < currentTime) {
+          console.warn("⚠️ Token expirado, cerrando sesión...");
+          cerrarSesionAutomatica();
+          return;
+        }
+
+        const tiempoRestante = (decodedToken.exp - currentTime) * 1000;
+        console.log("⏳ Cerrando sesión en:", tiempoRestante / 1000, "segundos");
+
+        logoutTimeoutRef.current = setTimeout(() => {
+          cerrarSesionAutomatica();
+        }, tiempoRestante);
+
         setUsuario(parsedUser);
       } catch (error) {
-        console.error("Error al parsear usuario de localStorage:", error);
-        localStorage.removeItem("usuario"); // Si hay error, eliminar datos corruptos
+        console.error("❌ Error al procesar el token:", error);
+        localStorage.removeItem("usuario");
+        localStorage.removeItem("token");
       }
     }
   }, []);
 
-  // 🔹 Función para iniciar sesión y actualizar el estado global
+  const cerrarSesionAutomatica = () => {
+    alert("⚠️ Tu sesión ha expirado. Inicia sesión nuevamente.");
+    logout();
+  };
+
   const login = (data) => {
     if (!data.usuario || !data.token) {
-      console.error("Datos inválidos en login:", data);
+      console.error("❌ Datos inválidos en login:", data);
       return;
     }
 
-    // Guardar usuario con email y `lastPasswordChange`
-    const usuarioData = {
-      id: data.usuario.id,
-      nombre: data.usuario.nombre,
-      email: data.usuario.email, // ✅ Asegurar que el email se guarda
-      rol: data.usuario.rol,
-      lastPasswordChange: data.usuario.lastPasswordChange || null, // ✅ Almacenar fecha de último cambio de contraseña
-      imagenPerfil: data.usuario.imagenPerfil || null, // 🔹 Asegurarnos de guardar la imagen
-    };
+    try {
+      const decodedToken = jwtDecode(data.token);
+      const tiempoRestante = (decodedToken.exp - Date.now() / 1000) * 1000;
+      console.log("⏳ Token válido por:", tiempoRestante / 1000, "segundos");
 
-    // Guardar en localStorage
+      if (logoutTimeoutRef.current) {
+        clearTimeout(logoutTimeoutRef.current);
+      }
+
+      logoutTimeoutRef.current = setTimeout(() => {
+        cerrarSesionAutomatica();
+      }, tiempoRestante);
+    } catch (error) {
+      console.error("❌ Error al decodificar el token:", error);
+    }
+
+    setUsuario(data.usuario);
     localStorage.setItem("token", data.token);
-    localStorage.setItem("usuario", JSON.stringify(usuarioData));
-
-    // Actualizar estado global
-    setUsuario(usuarioData);
+    localStorage.setItem("usuario", JSON.stringify(data.usuario));
   };
 
-  // 🔹 Función para cerrar sesión
   const logout = () => {
+    console.log("🚪 Cerrando sesión...");
     localStorage.removeItem("token");
     localStorage.removeItem("usuario");
     setUsuario(null);
+
+    if (logoutTimeoutRef.current) {
+      clearTimeout(logoutTimeoutRef.current);
+      logoutTimeoutRef.current = null;
+    }
   };
 
-  // 🔹 Función para actualizar perfil (incluyendo la contraseña si cambia)
   const actualizarPerfil = (datosActualizados) => {
     const usuarioActualizado = {
       ...usuario,
       ...datosActualizados,
-      imagenPerfil: datosActualizados.imagenPerfil || usuario.imagenPerfil, // 🔹 Asegurar que la imagen se actualiza
+      imagenPerfil: datosActualizados.imagenPerfil || usuario.imagenPerfil,
     };
 
-    // Si el usuario cambió la contraseña, actualizar `lastPasswordChange`
     if (datosActualizados.lastPasswordChange) {
       usuarioActualizado.lastPasswordChange = datosActualizados.lastPasswordChange;
     }
 
-    // Guardar en localStorage
     localStorage.setItem("usuario", JSON.stringify(usuarioActualizado));
-
-    // Actualizar estado global
     setUsuario(usuarioActualizado);
   };
 
   return (
-    <AuthContext.Provider value={{ usuario, setUsuario, login, logout, actualizarPerfil }}>
+    <AuthContext.Provider value={{ usuario, login, logout, actualizarPerfil }}>
       {children}
     </AuthContext.Provider>
   );
 }
 
-// Validación de PropTypes
 AuthProvider.propTypes = {
   children: PropTypes.node.isRequired,
 };
